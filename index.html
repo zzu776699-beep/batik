@@ -1,707 +1,1298 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2870
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
-{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\deftab720
-\pard\pardeftab720\partightenfactor0
-
-\f0\fs26 \cf0 \expnd0\expndtw0\kerning0
-\outl0\strokewidth0 \strokec2 <!DOCTYPE html>\
-<html lang="zh-CN">\
-<head>\
-    <meta charset="UTF-8">\
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
-    <title>\uc0\u34593 \u26579 AI\u21019 \u20316 \u24037 \u22346 </title>\
-    <script src="https://cdn.tailwindcss.com"></script>\
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">\
-    <script>\
-        tailwind.config = \{\
-            theme: \{\
-                extend: \{\
-                    colors: \{\
-                        batik: \{\
-                            blue: '#1a365d',\
-                            light: '#2c5282',\
-                            cream: '#f7f3e9',\
-                            dark: '#0f1e36'\
-                        \}\
-                    \},\
-                    fontFamily: \{\
-                        serif: ['"Noto Serif SC"', 'SimSun', 'serif']\
-                    \}\
-                \}\
-            \}\
-        \}\
-    </script>\
-    <style type="text/tailwindcss">\
-        @layer utilities \{\
-            .tab-active \{\
-                @apply border-b-2 border-batik-blue text-batik-blue font-medium;\
-            \}\
-            .canvas-texture \{\
-                background-color: #f7f3e9;\
-                background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d4c5a9' fill-opacity='0.25' fill-rule='evenodd'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z'/%3E%3C/g%3E%3C/svg%3E");\
-            \}\
-        \}\
-    </style>\
-</head>\
-<body class="h-screen overflow-hidden bg-gray-50 font-sans">\
-    <div class="flex h-full">\
-        <!-- \uc0\u24038 \u26639 \u65306 AI\u23545 \u35805  + \u35821 \u27861 \u38754 \u26495  -->\
-        <div class="w-2/5 flex flex-col border-r border-gray-200 bg-white">\
-            <!-- AI\uc0\u23545 \u35805 \u21306 \u22495  -->\
-            <div class="h-1/2 flex flex-col border-b border-gray-200">\
-                <div class="px-4 py-3 border-b border-gray-100 bg-batik-cream/50">\
-                    <h1 class="text-lg font-bold text-batik-blue font-serif">\uc0\u34593 \u26579 AI\u21019 \u20316 \u21161 \u25163 </h1>\
-                    <p class="text-xs text-gray-500 mt-0.5">\uc0\u36755 \u20837 \u33258 \u28982 \u35821 \u35328 \u65292 \u33258 \u21160 \u29983 \u25104 \u34593 \u26579 \u35821 \u27861 \u20195 \u30721 </p>\
-                </div>\
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3">\
-                    <div class="flex justify-start">\
-                        <div class="max-w-[85%] bg-gray-100 rounded-lg rounded-tl-none px-3 py-2 text-sm text-gray-700">\
-                            \uc0\u20320 \u22909 \u65281 \u25105 \u26159 \u34593 \u26579 AI\u21019 \u20316 \u21161 \u25163 \u12290 \u35831 \u20808 \u19978 \u20256 \u34593 \u26579 \u22270 \u29255 \u65292 \u28982 \u21518 \u21578 \u35785 \u25105 \u24819 \u35201 \u30340 \u25928 \u26524 \u65292 \u27604 \u22914 \'93\u21152 \u20912 \u35010 \u32441 \'94\u12289 \'93\u39068 \u33394 \u26579 \u28145 \'94\u12289 \'93\u20004 \u24352 \u22270 \u34701 \u21512 \'94\u65292 \u25105 \u20250 \u29983 \u25104 \u23545 \u24212 \u30340 \u34593 \u26579 \u35821 \u27861 \u20195 \u30721 \u24182 \u23454 \u26102 \u28210 \u26579 \u25928 \u26524 \u12290 \
-                        </div>\
-                    </div>\
-                </div>\
-                <div class="p-3 border-t border-gray-100">\
-                    <div class="flex gap-2">\
-                        <input id="chat-input" type="text" placeholder="\uc0\u36755 \u20837 \u20320 \u24819 \u35201 \u30340 \u34593 \u26579 \u25928 \u26524 ..." \
-                            class="flex-1 px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-batik-blue">\
-                        <button id="send-btn" class="px-4 py-2 bg-batik-blue text-white rounded-md text-sm hover:bg-batik-light transition-colors">\
-                            <i class="fa fa-paper-plane"></i>\
-                        </button>\
-                    </div>\
-                </div>\
-            </div>\
-            \
-            <!-- \uc0\u35821 \u27861 \u38754 \u26495  -->\
-            <div class="h-1/2 flex flex-col">\
-                <div class="flex border-b border-gray-200">\
-                    <button class="tab-btn tab-active flex-1 py-2.5 text-sm" data-tab="manual">\uc0\u35821 \u27861 \u25163 \u20876 </button>\
-                    <button class="tab-btn flex-1 py-2.5 text-sm text-gray-500" data-tab="code">\uc0\u24403 \u21069 \u20195 \u30721 </button>\
-                    <button class="tab-btn flex-1 py-2.5 text-sm text-gray-500" data-tab="history">\uc0\u21382 \u21490 \u29256 \u26412 </button>\
-                </div>\
-                \
-                <!-- \uc0\u35821 \u27861 \u25163 \u20876  -->\
-                <div id="tab-manual" class="tab-panel flex-1 overflow-y-auto p-3 text-sm">\
-                    <div class="space-y-4">\
-                        <div>\
-                            <h3 class="font-medium text-batik-blue mb-1.5">\uc0\u22522 \u30784 \u22270 \u23618 \u32467 \u26500 </h3>\
-                            <pre class="bg-gray-50 p-2 rounded text-xs overflow-x-auto">\uc0\u22270 \u23618 1 \{\
-    \uc0\u32032 \u26448 : "\u22270 \u29255 \u22320 \u22336 ";\
-    \uc0\u20301 \u32622 : x, y;\
-    \uc0\u22823 \u23567 : \u23485 \u24230 , \u39640 \u24230 ;\
-    \uc0\u26059 \u36716 : \u35282 \u24230 ;\
-\}</pre>\
-                        </div>\
-                        <div>\
-                            <h3 class="font-medium text-batik-blue mb-1.5">\uc0\u34593 \u26579 \u25928 \u26524 \u25351 \u20196 </h3>\
-                            <ul class="space-y-1 text-xs text-gray-600">\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u30011 \u34593 \u31508 \u35302 : \u25968 \u20540 </code> - \u27169 \u25311 \u38108 \u20992 \u31508 \u35302 \u31895 \u32454 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u28857 \u34593 \u23494 \u24230 : 0-100</code> - \u28857 \u34593 \u25216 \u27861 \u30095 \u23494 \u31243 \u24230 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u28024 \u26579 \u28145 \u24230 : 0-100</code> - \u38747 \u34013 \u26579 \u33394 \u28145 \u27973 \u24230 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u20912 \u35010 \u32441 : \u24320 \u21551 /\u20851 \u38381 </code> - \u26631 \u24535 \u24615 \u20912 \u35010 \u32441 \u25928 \u26524 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u20912 \u35010 \u32441 \u31895 \u32454 : \u25968 \u20540 </code> - \u35010 \u32441 \u32447 \u26465 \u31895 \u32454 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u20912 \u35010 \u32441 \u23494 \u24230 : \u25968 \u20540 </code> - \u35010 \u32441 \u20998 \u24067 \u23494 \u38598 \u24230 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u26197 \u26579 \u31243 \u24230 : 0-100</code> - \u26579 \u26009 \u36793 \u32536 \u36807 \u28193 \u25928 \u26524 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u36879 \u26126 \u24230 : 0-100</code> - \u22270 \u23618 \u36879 \u26126 \u31243 \u24230 </li>\
-                            </ul>\
-                        </div>\
-                        <div>\
-                            <h3 class="font-medium text-batik-blue mb-1.5">\uc0\u22810 \u22270 \u34701 \u21512 \u27169 \u24335 </h3>\
-                            <ul class="space-y-1 text-xs text-gray-600">\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u34701 \u21512 \u27169 \u24335 : \u21472 \u21360 </code> - \u22810 \u23618 \u34593 \u21472 \u26579 \u25928 \u26524 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u34701 \u21512 \u27169 \u24335 : \u25340 \u25509 </code> - \u22270 \u26696 \u25340 \u25509 \u32452 \u21512 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u34701 \u21512 \u27169 \u24335 : \u34746 \u26059 </code> - \u20013 \u24515 \u26059 \u36716 \u34701 \u21512 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u34701 \u21512 \u27169 \u24335 : \u20132 \u32455 </code> - \u32441 \u29702 \u20114 \u30456 \u31359 \u25554 </li>\
-                            </ul>\
-                        </div>\
-                        <div>\
-                            <h3 class="font-medium text-batik-blue mb-1.5">\uc0\u21160 \u24577 \u25928 \u26524 \u25351 \u20196 </h3>\
-                            <ul class="space-y-1 text-xs text-gray-600">\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u21160 \u30011 : \u28024 \u26579 </code> - \u26579 \u33394 \u28176 \u21464 \u21160 \u30011 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u21160 \u30011 : \u20912 \u35010 \u34067 \u24310 </code> - \u20912 \u35010 \u32441 \u25193 \u25955 \u21160 \u30011 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u21160 \u30011 : \u22270 \u26696 \u34701 \u21512 </code> - \u22270 \u26696 \u36807 \u28193 \u21160 \u30011 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u21160 \u30011 \u36895 \u24230 : \u25968 \u20540 </code> - \u25773 \u25918 \u36895 \u24230 \u20493 \u29575 </li>\
-                                <li><code class="bg-gray-100 px-1 rounded">\uc0\u21160 \u30011 \u24490 \u29615 : \u24320 \u21551 /\u20851 \u38381 </code> - \u24490 \u29615 \u25773 \u25918 </li>\
-                            </ul>\
-                        </div>\
-                    </div>\
-                </div>\
-                \
-                <!-- \uc0\u24403 \u21069 \u20195 \u30721  -->\
-                <div id="tab-code" class="tab-panel hidden flex-1 flex flex-col">\
-                    <textarea id="code-editor" class="flex-1 w-full p-3 font-mono text-xs bg-batik-dark text-green-400 resize-none focus:outline-none" spellcheck="false">// \uc0\u34593 \u26579 AI\u21019 \u20316 \u24037 \u22346  - BatikScript\
-\uc0\u22270 \u23618 1 \{\
-    \uc0\u32032 \u26448 : "\u26410 \u19978 \u20256 ";\
-    \uc0\u20301 \u32622 : 100, 100;\
-    \uc0\u22823 \u23567 : 300, 300;\
-    \uc0\u26059 \u36716 : 0;\
-    \uc0\u28024 \u26579 \u28145 \u24230 : 70;\
-    \uc0\u20912 \u35010 \u32441 : \u20851 \u38381 ;\
-    \uc0\u20912 \u35010 \u32441 \u31895 \u32454 : 1;\
-    \uc0\u20912 \u35010 \u32441 \u23494 \u24230 : 50;\
-    \uc0\u26197 \u26579 \u31243 \u24230 : 10;\
-    \uc0\u36879 \u26126 \u24230 : 100;\
-\}\
-\
-\uc0\u20840 \u23616  \{\
-    \uc0\u30011 \u24067 \u24213 \u33394 : \u31859 \u30333 ;\
-    \uc0\u21160 \u30011 : \u26080 ;\
-    \uc0\u21160 \u30011 \u36895 \u24230 : 1;\
-    \uc0\u21160 \u30011 \u24490 \u29615 : \u20851 \u38381 ;\
-\}</textarea>\
-                    <div class="px-3 py-2 border-t border-gray-700 bg-gray-800 text-xs text-gray-400">\
-                        \uc0\u25353  Ctrl+S \u24212 \u29992 \u20195 \u30721 \u20462 \u25913 \
-                    </div>\
-                </div>\
-                \
-                <!-- \uc0\u21382 \u21490 \u29256 \u26412  -->\
-                <div id="tab-history" class="tab-panel hidden flex-1 overflow-y-auto p-3">\
-                    <div class="text-sm text-gray-500 text-center py-8">\
-                        \uc0\u26242 \u26080 \u21382 \u21490 \u29256 \u26412 \
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-        \
-        <!-- \uc0\u21491 \u26639 \u65306 \u30011 \u24067  + \u25511 \u21046  -->\
-        <div class="w-3/5 flex flex-col bg-gray-100">\
-            <!-- \uc0\u39030 \u37096 \u24037 \u20855 \u26639  -->\
-            <div class="px-4 py-3 bg-white border-b border-gray-200 flex justify-between items-center">\
-                <div class="flex gap-2">\
-                    <label class="px-3 py-1.5 bg-batik-blue text-white rounded text-sm cursor-pointer hover:bg-batik-light transition-colors">\
-                        <i class="fa fa-upload mr-1.5"></i>\uc0\u19978 \u20256 \u22270 \u29255 \
-                        <input type="file" id="upload-input" accept="image/*" multiple class="hidden">\
-                    </label>\
-                    <button id="reset-btn" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">\
-                        <i class="fa fa-refresh mr-1.5"></i>\uc0\u37325 \u32622 \u30011 \u24067 \
-                    </button>\
-                </div>\
-                <div class="flex gap-2">\
-                    <button id="export-img-btn" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">\
-                        <i class="fa fa-download mr-1.5"></i>\uc0\u23548 \u20986 \u22270 \u29255 \
-                    </button>\
-                    <button id="export-code-btn" class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">\
-                        <i class="fa fa-code mr-1.5"></i>\uc0\u23548 \u20986 \u20195 \u30721 \
-                    </button>\
-                </div>\
-            </div>\
-            \
-            <!-- \uc0\u30011 \u24067 \u21306 \u22495  -->\
-            <div class="flex-1 relative overflow-hidden canvas-texture flex items-center justify-center">\
-                <canvas id="batik-canvas" width="640" height="480" class="bg-white shadow-lg rounded-sm"></canvas>\
-            </div>\
-            \
-            <!-- \uc0\u25773 \u25918 \u25511 \u21046 \u26639  -->\
-            <div id="play-control" class="px-4 py-2.5 bg-white border-t border-gray-200 flex items-center gap-3">\
-                <button id="play-btn" class="w-8 h-8 flex items-center justify-center rounded-full bg-batik-blue text-white text-sm hover:bg-batik-light transition-colors">\
-                    <i class="fa fa-play"></i>\
-                </button>\
-                <div class="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden cursor-pointer">\
-                    <div id="progress-bar" class="h-full w-0 bg-batik-blue transition-all"></div>\
-                </div>\
-                <span id="time-text" class="text-xs text-gray-500 w-12 text-right">00:00</span>\
-                <label class="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer">\
-                    <input type="checkbox" id="loop-check" class="accent-batik-blue"> \uc0\u24490 \u29615 \
-                </label>\
-                <button id="screenshot-btn" class="px-2.5 py-1 text-xs text-gray-600 hover:text-batik-blue transition-colors">\
-                    <i class="fa fa-camera mr-1"></i>\uc0\u25130 \u23631 \
-                </button>\
-            </div>\
-        </div>\
-    </div>\
-\
-    <script>\
-        // DOM\uc0\u20803 \u32032 \
-        const canvas = document.getElementById('batik-canvas');\
-        const ctx = canvas.getContext('2d');\
-        const chatInput = document.getElementById('chat-input');\
-        const sendBtn = document.getElementById('send-btn');\
-        const chatMessages = document.getElementById('chat-messages');\
-        const codeEditor = document.getElementById('code-editor');\
-        const uploadInput = document.getElementById('upload-input');\
-        const resetBtn = document.getElementById('reset-btn');\
-        const exportImgBtn = document.getElementById('export-img-btn');\
-        const exportCodeBtn = document.getElementById('export-code-btn');\
-        const playBtn = document.getElementById('play-btn');\
-        const progressBar = document.getElementById('progress-bar');\
-        const timeText = document.getElementById('time-text');\
-        const loopCheck = document.getElementById('loop-check');\
-        const screenshotBtn = document.getElementById('screenshot-btn');\
-        const tabBtns = document.querySelectorAll('.tab-btn');\
-        const tabPanels = document.querySelectorAll('.tab-panel');\
-\
-        // \uc0\u20840 \u23616 \u29366 \u24577 \
-        let layers = [];\
-        let isPlaying = false;\
-        let animationId = null;\
-        let currentTime = 0;\
-        const animationDuration = 3000;\
-        let history = [];\
-\
-        // \uc0\u26631 \u31614 \u39029 \u20999 \u25442 \
-        tabBtns.forEach(btn => \{\
-            btn.addEventListener('click', () => \{\
-                const tab = btn.dataset.tab;\
-                tabBtns.forEach(b => \{\
-                    b.classList.remove('tab-active');\
-                    b.classList.add('text-gray-500');\
-                \});\
-                btn.classList.add('tab-active');\
-                btn.classList.remove('text-gray-500');\
-                \
-                tabPanels.forEach(panel => panel.classList.add('hidden'));\
-                document.getElementById(`tab-$\{tab\}`).classList.remove('hidden');\
-            \});\
-        \});\
-\
-        // \uc0\u22270 \u29255 \u19978 \u20256 \u22788 \u29702 \
-        uploadInput.addEventListener('change', (e) => \{\
-            const files = Array.from(e.target.files);\
-            if (files.length === 0) return;\
-            if (layers.length + files.length > 3) \{\
-                alert('\uc0\u26368 \u22810 \u25903 \u25345 \u21516 \u26102 \u19978 \u20256 3\u24352 \u34593 \u26579 \u22270 \u29255 ');\
-                return;\
-            \}\
-\
-            files.forEach((file) => \{\
-                const reader = new FileReader();\
-                reader.onload = (event) => \{\
-                    const img = new Image();\
-                    img.onload = () => \{\
-                        const layerIndex = layers.length + 1;\
-                        const layer = \{\
-                            id: layerIndex,\
-                            image: img,\
-                            x: 80 + (layers.length * 40),\
-                            y: 80 + (layers.length * 40),\
-                            width: 220,\
-                            height: 220,\
-                            rotation: 0,\
-                            dyeDepth: 70,\
-                            iceCrack: false,\
-                            iceCrackWidth: 1,\
-                            iceCrackDensity: 50,\
-                            blur: 10,\
-                            opacity: 100\
-                        \};\
-                        layers.push(layer);\
-                        updateCodeFromLayers();\
-                        render();\
-                    \};\
-                    img.src = event.target.result;\
-                \};\
-                reader.readAsDataURL(file);\
-            \});\
-            uploadInput.value = '';\
-        \});\
-\
-        // \uc0\u26680 \u24515 \u28210 \u26579 \u20989 \u25968 \
-        function render() \{\
-            ctx.clearRect(0, 0, canvas.width, canvas.height);\
-            \
-            // \uc0\u30011 \u24067 \u24213 \u33394 \
-            ctx.fillStyle = '#f7f3e9';\
-            ctx.fillRect(0, 0, canvas.width, canvas.height);\
-\
-            layers.forEach(layer => \{\
-                ctx.save();\
-                \
-                // \uc0\u21464 \u25442 \u20013 \u24515 \
-                const centerX = layer.x + layer.width / 2;\
-                const centerY = layer.y + layer.height / 2;\
-                ctx.translate(centerX, centerY);\
-                ctx.rotate(layer.rotation * Math.PI / 180);\
-                ctx.translate(-centerX, -centerY);\
-                ctx.globalAlpha = layer.opacity / 100;\
-\
-                // \uc0\u32472 \u21046 \u21407 \u22270 \
-                ctx.drawImage(layer.image, layer.x, layer.y, layer.width, layer.height);\
-\
-                // \uc0\u28024 \u26579 \u25928 \u26524 \u65288 \u27491 \u29255 \u21472 \u24213 \u27169 \u25311 \u38747 \u34013 \u26579 \u33394 \u65289 \
-                if (layer.dyeDepth > 0) \{\
-                    ctx.globalCompositeOperation = 'multiply';\
-                    const intensity = layer.dyeDepth / 100;\
-                    ctx.fillStyle = `rgba(26, 54, 93, $\{intensity * 0.85\})`;\
-                    ctx.fillRect(layer.x, layer.y, layer.width, layer.height);\
-                    ctx.globalCompositeOperation = 'source-over';\
-                \}\
-\
-                // \uc0\u36793 \u32536 \u26197 \u26579 \
-                if (layer.blur > 0) \{\
-                    ctx.globalCompositeOperation = 'destination-out';\
-                    const gradient = ctx.createRadialGradient(\
-                        centerX, centerY, layer.width * 0.35,\
-                        centerX, centerY, layer.width * 0.5\
-                    );\
-                    gradient.addColorStop(0, 'rgba(0,0,0,0)');\
-                    gradient.addColorStop(1, `rgba(0,0,0,$\{layer.blur / 100\})`);\
-                    ctx.fillStyle = gradient;\
-                    ctx.fillRect(layer.x, layer.y, layer.width, layer.height);\
-                    ctx.globalCompositeOperation = 'source-over';\
-                \}\
-\
-                // \uc0\u20912 \u35010 \u32441 \u25928 \u26524 \
-                if (layer.iceCrack) \{\
-                    drawIceCracks(layer);\
-                \}\
-\
-                ctx.restore();\
-            \});\
-        \}\
-\
-        // \uc0\u32472 \u21046 \u20912 \u35010 \u32441 \u65288 \u31243 \u24207 \u21270 \u29983 \u25104 \u38543 \u26426 \u35010 \u32441 \u65289 \
-        function drawIceCracks(layer) \{\
-            ctx.strokeStyle = 'rgba(15, 30, 54, 0.7)';\
-            ctx.lineWidth = layer.iceCrackWidth;\
-            ctx.lineCap = 'round';\
-            \
-            const crackCount = Math.floor(layer.iceCrackDensity * 1.5);\
-            for (let i = 0; i < crackCount; i++) \{\
-                const startX = layer.x + Math.random() * layer.width;\
-                const startY = layer.y + Math.random() * layer.height;\
-                \
-                ctx.beginPath();\
-                ctx.moveTo(startX, startY);\
-                \
-                let x = startX;\
-                let y = startY;\
-                const segments = 3 + Math.floor(Math.random() * 6);\
-                \
-                for (let j = 0; j < segments; j++) \{\
-                    const angle = Math.random() * Math.PI * 2;\
-                    const length = 8 + Math.random() * 25;\
-                    x += Math.cos(angle) * length;\
-                    y += Math.sin(angle) * length;\
-                    \
-                    if (x > layer.x && x < layer.x + layer.width && \
-                        y > layer.y && y < layer.y + layer.height) \{\
-                        ctx.lineTo(x, y);\
-                    \}\
-                \}\
-                ctx.stroke();\
-            \}\
-        \}\
-\
-        // \uc0\u20174 \u22270 \u23618 \u29366 \u24577 \u21516 \u27493 \u20195 \u30721 \
-        function updateCodeFromLayers() \{\
-            let code = '// \uc0\u34593 \u26579 AI\u21019 \u20316 \u24037 \u22346  - BatikScript\\n';\
-            \
-            layers.forEach((layer, index) => \{\
-                code += `\uc0\u22270 \u23618 $\{index + 1\} \{\\n`;\
-                code += `    \uc0\u32032 \u26448 : "\u19978 \u20256 \u22270 \u29255 _$\{index + 1\}";\\n`;\
-                code += `    \uc0\u20301 \u32622 : $\{layer.x\}, $\{layer.y\};\\n`;\
-                code += `    \uc0\u22823 \u23567 : $\{layer.width\}, $\{layer.height\};\\n`;\
-                code += `    \uc0\u26059 \u36716 : $\{layer.rotation\};\\n`;\
-                code += `    \uc0\u28024 \u26579 \u28145 \u24230 : $\{layer.dyeDepth\};\\n`;\
-                code += `    \uc0\u20912 \u35010 \u32441 : $\{layer.iceCrack ? '\u24320 \u21551 ' : '\u20851 \u38381 '\};\\n`;\
-                code += `    \uc0\u20912 \u35010 \u32441 \u31895 \u32454 : $\{layer.iceCrackWidth\};\\n`;\
-                code += `    \uc0\u20912 \u35010 \u32441 \u23494 \u24230 : $\{layer.iceCrackDensity\};\\n`;\
-                code += `    \uc0\u26197 \u26579 \u31243 \u24230 : $\{layer.blur\};\\n`;\
-                code += `    \uc0\u36879 \u26126 \u24230 : $\{layer.opacity\};\\n`;\
-                code += `\}\\n\\n`;\
-            \});\
-\
-            code += `\uc0\u20840 \u23616  \{\\n`;\
-            code += `    \uc0\u30011 \u24067 \u24213 \u33394 : \u31859 \u30333 ;\\n`;\
-            code += `    \uc0\u21160 \u30011 : \u26080 ;\\n`;\
-            code += `    \uc0\u21160 \u30011 \u36895 \u24230 : 1;\\n`;\
-            code += `    \uc0\u21160 \u30011 \u24490 \u29615 : $\{loopCheck.checked ? '\u24320 \u21551 ' : '\u20851 \u38381 '\};\\n`;\
-            code += `\}`;\
-\
-            codeEditor.value = code;\
-            saveHistory();\
-        \}\
-\
-        // \uc0\u35299 \u26512 \u20195 \u30721 \u24182 \u28210 \u26579 \
-        function parseCodeAndRender() \{\
-            const code = codeEditor.value;\
-            const layerRegex = /\uc0\u22270 \u23618 (\\d+)\\s*\{([^\}]+)\}/g;\
-            let match;\
-            const newLayers = [];\
-\
-            while ((match = layerRegex.exec(code)) !== null) \{\
-                const layerNum = parseInt(match[1]);\
-                const content = match[2];\
-                const originalLayer = layers[layerNum - 1];\
-                \
-                if (!originalLayer) continue;\
-\
-                const layer = \{\
-                    id: layerNum,\
-                    image: originalLayer.image,\
-                    x: originalLayer.x,\
-                    y: originalLayer.y,\
-                    width: originalLayer.width,\
-                    height: originalLayer.height,\
-                    rotation: originalLayer.rotation,\
-                    dyeDepth: originalLayer.dyeDepth,\
-                    iceCrack: originalLayer.iceCrack,\
-                    iceCrackWidth: originalLayer.iceCrackWidth,\
-                    iceCrackDensity: originalLayer.iceCrackDensity,\
-                    blur: originalLayer.blur,\
-                    opacity: originalLayer.opacity\
-                \};\
-\
-                // \uc0\u25552 \u21462 \u21442 \u25968 \
-                const posMatch = content.match(/\uc0\u20301 \u32622 :\\s*(\\d+),\\s*(\\d+)/);\
-                if (posMatch) \{ layer.x = parseInt(posMatch[1]); layer.y = parseInt(posMatch[2]); \}\
-\
-                const sizeMatch = content.match(/\uc0\u22823 \u23567 :\\s*(\\d+),\\s*(\\d+)/);\
-                if (sizeMatch) \{ layer.width = parseInt(sizeMatch[1]); layer.height = parseInt(sizeMatch[2]); \}\
-\
-                const rotMatch = content.match(/\uc0\u26059 \u36716 :\\s*(\\d+)/);\
-                if (rotMatch) layer.rotation = parseInt(rotMatch[1]);\
-\
-                const dyeMatch = content.match(/\uc0\u28024 \u26579 \u28145 \u24230 :\\s*(\\d+)/);\
-                if (dyeMatch) layer.dyeDepth = parseInt(dyeMatch[1]);\
-\
-                const iceMatch = content.match(/\uc0\u20912 \u35010 \u32441 :\\s*(\u24320 \u21551 |\u20851 \u38381 )/);\
-                if (iceMatch) layer.iceCrack = iceMatch[1] === '\uc0\u24320 \u21551 ';\
-\
-                const iceWidthMatch = content.match(/\uc0\u20912 \u35010 \u32441 \u31895 \u32454 :\\s*(\\d+)/);\
-                if (iceWidthMatch) layer.iceCrackWidth = parseInt(iceWidthMatch[1]);\
-\
-                const iceDensityMatch = content.match(/\uc0\u20912 \u35010 \u32441 \u23494 \u24230 :\\s*(\\d+)/);\
-                if (iceDensityMatch) layer.iceCrackDensity = parseInt(iceDensityMatch[1]);\
-\
-                const blurMatch = content.match(/\uc0\u26197 \u26579 \u31243 \u24230 :\\s*(\\d+)/);\
-                if (blurMatch) layer.blur = parseInt(blurMatch[1]);\
-\
-                const opacityMatch = content.match(/\uc0\u36879 \u26126 \u24230 :\\s*(\\d+)/);\
-                if (opacityMatch) layer.opacity = parseInt(opacityMatch[1]);\
-\
-                newLayers.push(layer);\
-            \}\
-\
-            if (newLayers.length > 0) \{\
-                layers = newLayers;\
-                render();\
-                saveHistory();\
-            \}\
-        \}\
-\
-        // \uc0\u21382 \u21490 \u29256 \u26412 \u31649 \u29702 \
-        function saveHistory() \{\
-            history.push(\{\
-                time: new Date().toLocaleTimeString('zh-CN', \{hour12: false\}),\
-                code: codeEditor.value\
-            \});\
-            updateHistoryPanel();\
-        \}\
-\
-        function updateHistoryPanel() \{\
-            const panel = document.getElementById('tab-history');\
-            if (history.length === 0) \{\
-                panel.innerHTML = '<div class="text-sm text-gray-500 text-center py-8">\uc0\u26242 \u26080 \u21382 \u21490 \u29256 \u26412 </div>';\
-                return;\
-            \}\
-\
-            let html = '<div class="space-y-2">';\
-            history.slice().reverse().forEach((item, idx) => \{\
-                const realIndex = history.length - 1 - idx;\
-                html += `\
-                <div class="p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer" onclick="restoreHistory($\{realIndex\})">\
-                    <div class="text-xs text-gray-500">$\{item.time\}</div>\
-                    <div class="text-xs text-gray-700 truncate mt-0.5">$\{item.code.split('\\n')[1] || item.code.split('\\n')[0]\}</div>\
-                </div>`;\
-            \});\
-            html += '</div>';\
-            panel.innerHTML = html;\
-        \}\
-\
-        window.restoreHistory = function(index) \{\
-            codeEditor.value = history[index].code;\
-            parseCodeAndRender();\
-        \};\
-\
-        // \uc0\u20195 \u30721 \u32534 \u36753 \u22120 \u24555 \u25463 \u38190 \
-        codeEditor.addEventListener('keydown', (e) => \{\
-            if (e.ctrlKey && e.key === 's') \{\
-                e.preventDefault();\
-                parseCodeAndRender();\
-            \}\
-        \});\
-\
-        // AI\uc0\u23545 \u35805 \u36923 \u36753 \
-        function sendMessage() \{\
-            const text = chatInput.value.trim();\
-            if (!text) return;\
-\
-            appendMessage(text, 'user');\
-            chatInput.value = '';\
-\
-            // \uc0\u27169 \u25311 AI\u21709 \u24212 \
-            setTimeout(() => \{\
-                const response = generateAIResponse(text);\
-                appendMessage(response.text, 'ai');\
-                if (response.code) \{\
-                    codeEditor.value = response.code;\
-                    parseCodeAndRender();\
-                \}\
-            \}, 800);\
-        \}\
-\
-        function appendMessage(text, type) \{\
-            const wrapper = document.createElement('div');\
-            wrapper.className = type === 'user' ? 'flex justify-end' : 'flex justify-start';\
-\
-            const bubble = document.createElement('div');\
-            bubble.className = type === 'user' \
-                ? 'max-w-[85%] bg-batik-blue text-white rounded-lg rounded-tr-none px-3 py-2 text-sm'\
-                : 'max-w-[85%] bg-gray-100 rounded-lg rounded-tl-none px-3 py-2 text-sm text-gray-700';\
-\
-            if (type === 'ai' && text.includes('```')) \{\
-                bubble.innerHTML = text.replace(/```([\\s\\S]*?)```/g, \
-                    '<pre class="bg-gray-800 text-green-400 p-2 rounded mt-1.5 text-xs overflow-x-auto">$1</pre>');\
-            \} else \{\
-                bubble.textContent = text;\
-            \}\
-\
-            wrapper.appendChild(bubble);\
-            chatMessages.appendChild(wrapper);\
-            chatMessages.scrollTop = chatMessages.scrollHeight;\
-        \}\
-\
-        function generateAIResponse(input) \{\
-            if (layers.length === 0) \{\
-                return \{ text: '\uc0\u35831 \u20808 \u19978 \u20256 \u34593 \u26579 \u22270 \u29255 \u32032 \u26448 \u65292 \u25105 \u25165 \u33021 \u20026 \u20320 \u29983 \u25104 \u23545 \u24212 \u30340 \u25928 \u26524 \u21734 ~' \};\
-            \}\
-\
-            let code = codeEditor.value;\
-            let text = '';\
-\
-            if (input.includes('\uc0\u20912 \u35010 \u32441 ') || input.includes('\u20912 \u35010 ')) \{\
-                code = code.replace(/\uc0\u20912 \u35010 \u32441 :\\s*\u20851 \u38381 /g, '\u20912 \u35010 \u32441 : \u24320 \u21551 ');\
-                code = code.replace(/\uc0\u20912 \u35010 \u32441 \u23494 \u24230 :\\s*\\d+/g, '\u20912 \u35010 \u32441 \u23494 \u24230 : 60');\
-                text = `\uc0\u24050 \u20026 \u20320 \u28155 \u21152 \u34593 \u26579 \u26631 \u24535 \u24615 \u20912 \u35010 \u32441 \u25928 \u26524 \u12290 \\n\\n\u20912 \u35010 \u32441 \u26159 \u34593 \u26579 \u26368 \u20855 \u36776 \u35782 \u24230 \u30340 \u29305 \u24449 \u65292 \u30001 \u28024 \u26579 \u36807 \u31243 \u20013 \u34593 \u23618 \u33258 \u28982 \u40863 \u35010 \u24418 \u25104 \u65292 \u27599 \u19968 \u24352 \u20316 \u21697 \u30340 \u35010 \u32441 \u37117 \u26159 \u29420 \u19968 \u26080 \u20108 \u30340 \u12290 \\n\\n\\`\\`\\`\\n\u20912 \u35010 \u32441 : \u24320 \u21551 \\n\u20912 \u35010 \u32441 \u23494 \u24230 : 60\\n\\`\\`\\``;\
-            \} \
-            else if (input.includes('\uc0\u28145 ') || input.includes('\u26579 \u28145 ') || input.includes('\u39068 \u33394 \u28145 ')) \{\
-                code = code.replace(/\uc0\u28024 \u26579 \u28145 \u24230 :\\s*\\d+/g, (match) => \{\
-                    const val = parseInt(match.match(/\\d+/)[0]);\
-                    return `\uc0\u28024 \u26579 \u28145 \u24230 : $\{Math.min(100, val + 20)\}`;\
-                \});\
-                text = `\uc0\u24050 \u21152 \u28145 \u28024 \u26579 \u28145 \u24230 \u65292 \u38747 \u34013 \u33394 \u35843 \u26356 \u21152 \u27987 \u37057 \u12290 \\n\\n\u20256 \u32479 \u34593 \u26579 \u20013 \u65292 \u26579 \u33394 \u28145 \u24230 \u30001 \u28024 \u26579 \u27425 \u25968 \u20915 \u23450 \u65292 \u32463 \u20856 \u34255 \u38738 \u33394 \u38656 \u35201 \u21453 \u22797 \u20837 \u32568 \u21313 \u20313 \u27425 \u25165 \u33021 \u36798 \u21040 \u12290 \\n\\n\\`\\`\\`\\n\u28024 \u26579 \u28145 \u24230 : 90\\n\\`\\`\\``;\
-            \}\
-            else if (input.includes('\uc0\u27973 ') || input.includes('\u26579 \u27973 ') || input.includes('\u39068 \u33394 \u27973 ')) \{\
-                code = code.replace(/\uc0\u28024 \u26579 \u28145 \u24230 :\\s*\\d+/g, (match) => \{\
-                    const val = parseInt(match.match(/\\d+/)[0]);\
-                    return `\uc0\u28024 \u26579 \u28145 \u24230 : $\{Math.max(10, val - 20)\}`;\
-                \});\
-                text = `\uc0\u24050 \u35843 \u27973 \u28024 \u26579 \u28145 \u24230 \u65292 \u21576 \u29616 \u26356 \u28165 \u26032 \u30340 \u27973 \u34013 \u33394 \u35843 \u12290 \\n\\n\\`\\`\\`\\n\u28024 \u26579 \u28145 \u24230 : 50\\n\\`\\`\\``;\
-            \}\
-            else if (input.includes('\uc0\u26197 \u26579 ') || input.includes('\u27169 \u31946 ') || input.includes('\u36807 \u28193 ')) \{\
-                code = code.replace(/\uc0\u26197 \u26579 \u31243 \u24230 :\\s*\\d+/g, '\u26197 \u26579 \u31243 \u24230 : 40');\
-                text = `\uc0\u24050 \u22686 \u21152 \u26197 \u26579 \u25928 \u26524 \u65292 \u27169 \u25311 \u26579 \u26009 \u22312 \u24067 \u26009 \u32420 \u32500 \u20013 \u28183 \u36879 \u30340 \u33258 \u28982 \u36807 \u28193 \u24863 \u12290 \\n\\n\\`\\`\\`\\n\u26197 \u26579 \u31243 \u24230 : 40\\n\\`\\`\\``;\
-            \}\
-            else if ((input.includes('\uc0\u34701 \u21512 ') || input.includes('\u21472 ')) && layers.length >= 2) \{\
-                code = code.replace(/\uc0\u22270 \u23618 2\\s*\{([^\}]+)\}/, (match, content) => \{\
-                    let newContent = content;\
-                    if (content.includes('\uc0\u36879 \u26126 \u24230 :')) \{\
-                        newContent = content.replace(/\uc0\u36879 \u26126 \u24230 :\\s*\\d+/, '\u36879 \u26126 \u24230 : 70');\
-                    \} else \{\
-                        newContent += '    \uc0\u36879 \u26126 \u24230 : 70;\\n';\
-                    \}\
-                    return `\uc0\u22270 \u23618 2 \{$\{newContent\}\}`;\
-                \});\
-                text = `\uc0\u24050 \u35774 \u32622 \u21452 \u22270 \u23618 \u21472 \u21360 \u34701 \u21512 \u25928 \u26524 \u65292 \u27169 \u25311 \u22810 \u23618 \u34593 \u21472 \u26579 \u30340 \u35270 \u35273 \u25928 \u26524 \u12290 \\n\\n\u20320 \u21487 \u20197 \u30452 \u25509 \u22312 \u30011 \u24067 \u19978 \u25302 \u25341 \u22270 \u23618 \u35843 \u25972 \u20301 \u32622 \u65292 \u34701 \u21512 \u25928 \u26524 \u20250 \u23454 \u26102 \u21464 \u21270 \u12290 \\n\\n\\`\\`\\`\\n\u36879 \u26126 \u24230 : 70\\n\u34701 \u21512 \u27169 \u24335 : \u21472 \u21360 \\n\\`\\`\\``;\
-            \}\
-            else \{\
-                text = `\uc0\u25105 \u29702 \u35299 \u20320 \u30340 \u38656 \u27714 \u21862 \u65281 \u20320 \u21487 \u20197 \u23581 \u35797 \u35828 \u36825 \u20123 \u25351 \u20196 \u65306 \\n\'95 "\u32473 \u36825 \u24352 \u34593 \u26579 \u21152 \u20912 \u35010 \u32441 "\\n\'95 "\u39068 \u33394 \u26579 \u28145 \u19968 \u28857 "\\n\'95 "\u22686 \u21152 \u26197 \u26579 \u25928 \u26524 "\\n\'95 "\u25226 \u20004 \u24352 \u22270 \u34701 \u21512 "\\n\\n\u25105 \u20250 \u29983 \u25104 \u23545 \u24212 \u30340 \u34593 \u26579 \u35821 \u27861 \u20195 \u30721 \u24182 \u23454 \u26102 \u28210 \u26579 \u25928 \u26524 \u12290 `;\
-            \}\
-\
-            return \{ text, code \};\
-        \}\
-\
-        // \uc0\u20107 \u20214 \u32465 \u23450 \
-        sendBtn.addEventListener('click', sendMessage);\
-        chatInput.addEventListener('keydown', (e) => \{\
-            if (e.key === 'Enter') sendMessage();\
-        \});\
-\
-        resetBtn.addEventListener('click', () => \{\
-            layers = [];\
-            render();\
-            updateCodeFromLayers();\
-        \});\
-\
-        exportImgBtn.addEventListener('click', () => \{\
-            const link = document.createElement('a');\
-            link.download = '\uc0\u34593 \u26579 \u21019 \u20316 .png';\
-            link.href = canvas.toDataURL('image/png');\
-            link.click();\
-        \});\
-\
-        exportCodeBtn.addEventListener('click', () => \{\
-            const blob = new Blob([codeEditor.value], \{type: 'text/plain;charset=utf-8'\});\
-            const link = document.createElement('a');\
-            link.download = '\uc0\u34593 \u26579 \u35821 \u27861 \u20195 \u30721 .txt';\
-            link.href = URL.createObjectURL(blob);\
-            link.click();\
-        \});\
-\
-        // \uc0\u21160 \u30011 \u25773 \u25918 \u25511 \u21046 \
-        playBtn.addEventListener('click', () => \{\
-            if (layers.length === 0) \{\
-                alert('\uc0\u35831 \u20808 \u19978 \u20256 \u22270 \u29255 \u20877 \u25773 \u25918 \u21160 \u30011 ');\
-                return;\
-            \}\
-            isPlaying ? pauseAnimation() : playAnimation();\
-        \});\
-\
-        function playAnimation() \{\
-            isPlaying = true;\
-            playBtn.innerHTML = '<i class="fa fa-pause"></i>';\
-            const startTime = Date.now() - currentTime;\
-\
-            function animate() \{\
-                if (!isPlaying) return;\
-\
-                currentTime = Date.now() - startTime;\
-                const progress = Math.min(currentTime / animationDuration, 1);\
-                \
-                progressBar.style.width = `$\{progress * 100\}%`;\
-                const sec = Math.floor(currentTime / 1000);\
-                const ms = Math.floor((currentTime % 1000) / 10);\
-                timeText.textContent = `$\{String(sec).padStart(2,'0')\}:$\{String(ms).padStart(2,'0')\}`;\
-\
-                // \uc0\u28024 \u26579 \u21160 \u30011 \u25928 \u26524 \
-                layers.forEach(layer => \{\
-                    layer.dyeDepth = Math.floor(70 * progress);\
-                \});\
-                render();\
-\
-                if (progress >= 1) \{\
-                    if (loopCheck.checked) \{\
-                        currentTime = 0;\
-                        playAnimation();\
-                        return;\
-                    \}\
-                    pauseAnimation();\
-                \} else \{\
-                    animationId = requestAnimationFrame(animate);\
-                \}\
-            \}\
-            animationId = requestAnimationFrame(animate);\
-        \}\
-\
-        function pauseAnimation() \{\
-            isPlaying = false;\
-            playBtn.innerHTML = '<i class="fa fa-play"></i>';\
-            if (animationId) cancelAnimationFrame(animationId);\
-        \}\
-\
-        screenshotBtn.addEventListener('click', () => \{\
-            const link = document.createElement('a');\
-            link.download = `\uc0\u34593 \u26579 \u25130 \u23631 _$\{Date.now()\}.png`;\
-            link.href = canvas.toDataURL('image/png');\
-            link.click();\
-        \});\
-\
-        // \uc0\u21021 \u22987 \u28210 \u26579 \
-        render();\
-    </script>\
-</body>\
-</html>\
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蜡染AI创作工坊 · BatikScript</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --indigo:#1a3a5c;
+  --indigo-light:#2c5282;
+  --indigo-dark:#0f1e36;
+  --cream:#f7f3e9;
+  --paper:#f5f0e8;
+  --earth:#e8dcc4;
+  --ink:#2a2a28;
+  --muted:#8a8578;
+  --line:#e3dccd;
+  --bg-soft:#faf7f1;
+  --ok:#3d7a4a;
+  --err:#b3413a;
+  --font-sans:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  --font-serif:'Noto Serif SC',Georgia,'Songti SC',SimSun,serif;
+  --font-mono:'JetBrains Mono','IBM Plex Mono',Consolas,Menlo,monospace;
 }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font-sans);background:var(--bg-soft);color:var(--ink);overflow:hidden}
+#app{display:flex;height:100vh;width:100vw}
+
+/* ============ 左栏 ============ */
+.left{width:40%;min-width:400px;max-width:560px;display:flex;flex-direction:column;border-right:1px solid var(--line);background:#fff}
+.brand{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--cream)}
+.brand-logo{width:34px;height:34px;border-radius:9px;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:17px;flex:none}
+.brand h1{font-family:var(--font-serif);font-size:15px;font-weight:700;color:var(--indigo)}
+.brand p{font-size:10px;color:var(--muted);margin-top:1px;letter-spacing:.4px}
+
+/* 对话 */
+.chat{height:54%;display:flex;flex-direction:column;border-bottom:1px solid var(--line);min-height:240px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line)}
+.panel-head h3{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+.panel-head .chip{font-size:10px;padding:2px 8px;border:1px solid var(--line);border-radius:99px;color:var(--muted)}
+.msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.msg{display:flex;max-width:88%}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.msg .bubble{border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.65}
+.msg.user .bubble{background:var(--indigo);color:#fff;border-bottom-right-radius:3px}
+.msg.ai .bubble{background:#f1ede3;color:var(--ink);border-bottom-left-radius:3px}
+.msg .bubble .ai-code{display:block;background:var(--indigo-dark);color:#7dd3a8;font-family:var(--font-mono);font-size:11px;line-height:1.55;padding:9px 11px;border-radius:8px;margin:7px 0 3px;overflow-x:auto;white-space:pre}
+.msg .bubble .ai-inline{background:rgba(26,58,92,.09);font-family:var(--font-mono);font-size:11.5px;padding:1px 5px;border-radius:4px;color:var(--indigo)}
+.msg .bubble .craft{background:rgba(26,58,92,.07);border-left:3px solid var(--indigo);padding:7px 9px;border-radius:0 6px 6px 0;font-size:11.5px;color:#5d5a4f;margin-top:8px}
+.msg .bubble .craft b{color:var(--indigo);font-weight:600}
+.msg.ai .bubble.fading{animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.chat-input-row{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--line);background:#fff}
+.chat-input-row input{flex:1;border:1px solid var(--line);border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--font-sans);outline:none;transition:border-color .15s}
+.chat-input-row input:focus{border-color:var(--indigo)}
+.chat-input-row input:disabled{background:#f2efe7;color:var(--muted)}
+.send-btn{width:38px;height:38px;border:none;border-radius:9px;background:var(--indigo);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex:none}
+.send-btn:hover{background:var(--indigo-light)}
+.send-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* 语法面板 */
+.syntax{flex:1;display:flex;flex-direction:column;min-height:0}
+.tabs{display:flex;border-bottom:1px solid var(--line);background:#fdfbf7}
+.tabs button{flex:1;padding:11px 4px;border:none;background:none;font-size:12.5px;font-family:var(--font-sans);color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;display:flex;align-items:center;justify-content:center;gap:5px;transition:color .15s}
+.tabs button.on{color:var(--indigo);border-bottom-color:var(--indigo);font-weight:600}
+.tab-panel{flex:1;overflow-y:auto;min-height:0}
+.tab-panel.hidden{display:none}
+
+/* 语法手册 */
+.manual{padding:14px 16px}
+.manual .cat{margin-bottom:14px}
+.manual .cat h4{font-size:12px;font-weight:700;color:var(--indigo);margin-bottom:8px;letter-spacing:.5px}
+.manual .item{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:var(--bg-soft);cursor:help;transition:border-color .15s,box-shadow .15s}
+.manual .item:hover{border-color:rgba(26,58,92,.4);box-shadow:0 2px 8px rgba(26,58,92,.06)}
+.manual .item .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.manual .item .name{font-size:13px;font-weight:600}
+.manual .item .params{font-size:11px;color:var(--muted)}
+.manual .item pre{background:rgba(26,58,92,.06);border-radius:6px;padding:7px 9px;font-family:var(--font-mono);font-size:11px;color:#3c3a33;margin-top:6px;overflow-x:auto;white-space:pre}
+.tip{position:fixed;z-index:999;max-width:300px;background:var(--indigo-dark);color:#eae6da;font-size:12px;line-height:1.6;padding:10px 12px;border-radius:9px;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.25);display:none}
+.tip.show{display:block}
+
+/* 当前代码 */
+.code-wrap{display:flex;flex-direction:column;height:100%}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line)}
+.code-status{display:flex;align-items:center;gap:7px;font-size:11px}
+.badge{font-size:10px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.badge.ok{color:var(--ok);border-color:rgba(61,122,74,.35);background:rgba(61,122,74,.06)}
+.badge.err{color:var(--err);border-color:rgba(179,65,58,.35);background:rgba(179,65,58,.06)}
+.code-hint{font-size:10.5px;color:var(--muted)}
+.icon-btn{border:none;background:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:6px;transition:background .15s,color .15s}
+.icon-btn:hover{background:#f0ece1;color:var(--indigo)}
+#code-editor{flex:1;width:100%;resize:none;border:none;outline:none;background:var(--indigo-dark);color:#9fe0b8;font-family:var(--font-mono);font-size:12px;line-height:1.7;padding:13px 14px;white-space:pre;tab-size:2}
+.code-err{background:rgba(179,65,58,.07);border-top:1px solid rgba(179,65,58,.2);color:var(--err);font-size:11px;padding:7px 12px}
+
+/* 历史 */
+.history{padding:12px 16px}
+.history .empty{text-align:center;color:var(--muted);padding:36px 0;font-size:12px;line-height:2}
+.hist-item{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:8px;background:var(--bg-soft);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hist-item .meta{min-width:0}
+.hist-item .time{font-size:10.5px;color:var(--muted)}
+.hist-item .sum{font-size:12px;color:var(--ink);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-item .restore{border:1px solid var(--line);background:#fff;color:var(--indigo);font-size:11px;padding:4px 9px;border-radius:7px;cursor:pointer;flex:none;transition:background .15s}
+.hist-item .restore:hover{background:var(--indigo);color:#fff;border-color:var(--indigo)}
+
+/* ============ 右栏 ============ */
+.right{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg-soft)}
+.toolbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--line);background:#fff}
+.toolbar .grp{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:12.5px;font-family:var(--font-sans);padding:7px 12px;border-radius:8px;cursor:pointer;transition:all .15s}
+.btn:hover{background:#f6f2e9}
+.btn.primary{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.btn.primary:hover{background:var(--indigo-light)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.layer-count{font-size:11.5px;color:var(--muted)}
+.dropdown{position:relative}
+.menu{position:fixed;z-index:900;min-width:150px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:5px;display:none}
+.menu.show{display:block}
+.menu .mi{display:flex;align-items:center;gap:8px;padding:8px 11px;font-size:12.5px;border-radius:7px;cursor:pointer;color:var(--ink)}
+.menu .mi:hover{background:#f4f0e6}
+.menu .mi.danger{color:var(--err)}
+.menu .mi.danger:hover{background:rgba(179,65,58,.07)}
+
+.canvas-area{flex:1;display:flex;align-items:center;justify-content:center;padding:18px;overflow:hidden;background:
+  radial-gradient(circle at 1px 1px, rgba(26,58,92,.05) 1px, transparent 0) 0 0/22px 22px}
+.canvas-wrap{position:relative;box-shadow:0 12px 40px rgba(26,58,92,.18);border-radius:4px;line-height:0;background:#fff}
+#batik-canvas{display:block;width:100%;height:auto;max-width:640px;border-radius:4px;cursor:crosshair}
+#selection{position:absolute;border:2px solid rgba(26,58,92,.75);pointer-events:none;display:none;z-index:5}
+#selection .dot{position:absolute;width:10px;height:10px;background:#fff;border:2px solid var(--indigo);border-radius:3px;transform:translate(-50%,-50%)}
+#empty-hint{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;text-align:center}
+#empty-hint .icon{width:64px;height:64px;border-radius:50%;background:rgba(26,58,92,.08);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+#empty-hint p{font-size:14px;font-weight:500;color:rgba(26,58,92,.55)}
+#empty-hint span{font-size:11.5px;color:var(--muted);margin-top:6px}
+
+/* 播放控制 */
+.playback{display:none;align-items:center;gap:14px;padding:11px 18px;border-top:1px solid var(--line);background:#fff}
+.playback.show{display:flex}
+.play-btn{width:38px;height:38px;border:none;border-radius:50%;background:var(--indigo);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;flex:none}
+.play-btn:hover{background:var(--indigo-light)}
+.anim-label{font-size:11px;color:var(--muted);margin-bottom:2px;display:flex;justify-content:space-between}
+.slider{flex:1;min-width:120px}
+.slider input[type=range]{width:100%;accent-color:var(--indigo);cursor:pointer}
+.loop-row{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);white-space:nowrap}
+.switch{position:relative;width:34px;height:19px;border-radius:99px;background:#d8d2c4;cursor:pointer;transition:background .18s;flex:none;border:none}
+.switch.on{background:var(--indigo)}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;transition:left .18s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch.on::after{left:17px}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--indigo-dark);color:#eee9dd;font-size:12.5px;padding:10px 18px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:1000}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+/* 右键菜单 */
+#ctx-menu{position:fixed;z-index:950;min-width:150px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.16);padding:5px;display:none}
+#ctx-menu.show{display:block}
+#ctx-menu .mi{display:flex;align-items:center;gap:8px;padding:8px 11px;font-size:12.5px;border-radius:7px;cursor:pointer}
+#ctx-menu .mi:hover{background:#f4f0e6}
+#ctx-menu .mi.danger{color:var(--err)}
+
+@media (max-width:900px){
+  #app{flex-direction:column;overflow-y:auto}
+  .left{width:100%;max-width:none;min-width:0;height:58vh;border-right:none;border-bottom:1px solid var(--line)}
+  .right{min-height:60vh}
+  .chat{height:52%}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 左栏 ============ -->
+  <aside class="left">
+    <div class="brand">
+      <div class="brand-logo">蜡</div>
+      <div>
+        <h1>蜡染AI创作工坊</h1>
+        <p>BatikScript · 非遗技艺 · 语法驱动创作</p>
+      </div>
+    </div>
+
+    <!-- AI 对话 -->
+    <section class="chat">
+      <div class="panel-head">
+        <h3><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.7L19.6 10l-5.7 1.9L12 17.6l-1.9-5.7L4.4 10l5.7-1.3z"/></svg>蜡染AI对话</h3>
+        <span class="chip">BatikScript</span>
+      </div>
+      <div class="msgs" id="msgs"></div>
+      <div class="chat-input-row">
+        <input id="chat-input" type="text" placeholder="描述你想要的蜡染效果，如“加冰裂纹、染深一点”" autocomplete="off">
+        <button class="send-btn" id="send-btn" title="发送"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+      </div>
+    </section>
+
+    <!-- 语法面板 -->
+    <section class="syntax">
+      <div class="tabs">
+        <button class="on" data-tab="manual"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>语法手册</button>
+        <button data-tab="code"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>当前代码</button>
+        <button data-tab="history"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>历史版本</button>
+      </div>
+
+      <!-- 语法手册 -->
+      <div class="tab-panel" id="panel-manual"><div class="manual" id="manual-box"></div></div>
+
+      <!-- 当前代码 -->
+      <div class="tab-panel hidden" id="panel-code">
+        <div class="code-wrap">
+          <div class="code-head">
+            <div class="code-status">
+              <span class="badge ok" id="code-badge">语法正确</span>
+              <span class="code-hint">Ctrl/⌘+S 应用到画布</span>
+            </div>
+            <button class="icon-btn" id="copy-code-btn" title="复制代码"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+          </div>
+          <textarea id="code-editor" spellcheck="false" autocomplete="off"></textarea>
+          <div class="code-err" id="code-err" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- 历史版本 -->
+      <div class="tab-panel hidden" id="panel-history"><div class="history" id="history-box"></div></div>
+    </section>
+  </aside>
+
+  <!-- ============ 右栏 ============ -->
+  <main class="right">
+    <div class="toolbar">
+      <div class="grp">
+        <button class="btn primary" id="upload-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>上传图片</button>
+        <input type="file" id="file-input" accept="image/png,image/jpeg,image/jpg,image/webp" multiple style="display:none">
+        <div class="dropdown">
+          <button class="btn" id="sample-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>示例图案 ▾</button>
+        </div>
+        <span class="layer-count" id="layer-count">0/3 图层</span>
+      </div>
+      <div class="grp">
+        <button class="btn" id="reset-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>重置画布</button>
+        <button class="btn" id="export-img-btn" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出图片</button>
+        <div class="dropdown">
+          <button class="btn" id="code-drop-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>导出代码 ▾</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-area">
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="batik-canvas" width="600" height="600"></canvas>
+        <div id="selection"><div class="dot" style="left:0;top:0"></div><div class="dot" style="left:100%;top:0"></div><div class="dot" style="left:0;top:100%"></div><div class="dot" style="left:100%;top:100%"></div></div>
+        <div id="empty-hint">
+          <div class="icon"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="rgba(26,58,92,.55)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+          <p>上传蜡染图片开始创作</p>
+          <span>支持 PNG / JPG，最多 3 张 · 拖拽移动 · 右键图层操作</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="playback" id="playback">
+      <button class="play-btn" id="play-btn"><svg id="play-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
+      <button class="icon-btn" id="restart-btn" title="回到起始帧" style="width:30px;height:30px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>
+      <div class="slider">
+        <div class="anim-label"><span id="anim-name">浸染动画</span><span id="anim-pct">0%</span></div>
+        <input type="range" id="progress" min="0" max="100" value="100">
+      </div>
+      <div class="loop-row">
+        <button class="switch" id="loop-switch" role="switch" aria-checked="false"></button>
+        <span>循环</span>
+      </div>
+      <button class="btn" id="screenshot-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>截屏</button>
+    </div>
+  </main>
+</div>
+
+<div class="tip" id="tip"></div>
+<div class="menu" id="menu"></div>
+<div id="ctx-menu">
+  <div class="mi" data-act="dup"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>复制图层</div>
+  <div class="mi" data-act="front"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>置顶</div>
+  <div class="mi" data-act="back"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>置底</div>
+  <div class="mi danger" data-act="del"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>删除图层</div>
+</div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ============================================================
+ * 蜡染AI创作工坊 · BatikScript
+ * 独立静态版本 —— 零依赖，可直接在 GitHub Pages 打开
+ * 功能：AI对话(内置蜡染语法引擎) / 语法手册 / 代码编辑 / 图层画布
+ *       蜡染效果渲染 / 多图融合 / 动态播放 / 导出
+ * ============================================================ */
+
+/* ---------- DOM ---------- */
+const $ = (id) => document.getElementById(id);
+const canvas = $('batik-canvas'), ctx = canvas.getContext('2d');
+const CANVAS_W = canvas.width, CANVAS_H = canvas.height;
+const msgsBox = $('msgs'), chatInput = $('chat-input'), sendBtn = $('send-btn');
+const editor = $('code-editor'), codeBadge = $('code-badge'), codeErr = $('code-err');
+const selectionEl = $('selection'), emptyHint = $('empty-hint');
+const playbackBar = $('playback'), playIcon = $('play-icon'), progressEl = $('progress');
+const animNameEl = $('anim-name'), animPctEl = $('anim-pct'), loopSwitch = $('loop-switch');
+const layerCountEl = $('layer-count');
+const fileInput = $('file-input');
+const menu = $('menu'), ctxMenu = $('ctx-menu'), tip = $('tip');
+
+/* ---------- 常量 ---------- */
+const BG_COLORS = { '靛蓝':'#1a3a5c', '本白':'#f5f0e8', '土黄':'#e8dcc4' };
+const BLEND_MODES = ['叠印','拼接','螺旋','交织'];
+const ANIM_TYPES = ['无','浸染','冰裂蔓延','图案融合'];
+const BG_TYPES = ['靛蓝','本白','土黄'];
+const MAX_LAYERS = 3;
+const DEFAULT_EFFECTS = { strokeWidth:5, dotDensity:30, dyeDepth:50, iceCrack:false, iceCrackWidth:3, iceCrackDensity:50, blurAmount:2, blendMode:'叠印', opacity:100 };
+const DEFAULT_GLOBAL = { animation:'无', animationSpeed:5, animationLoop:false, canvasBg:'土黄' };
+const STORAGE_KEY = 'batik_code_history_v1';
+const SAMPLE_IMAGES = ['./assets/sample-batik-1.jpg', './assets/sample-batik-2.jpg'];
+
+/* ---------- 语法手册数据 ---------- */
+const SYNTAX_ITEMS = [
+  { id:'1', name:'图层', category:'layer', params:['序号（1-3）','素材','位置','大小','旋转'], example:'图层[1] {\n  素材: "图案A";\n  位置: 100, 200;\n  大小: 300, 400;\n  旋转: 15;\n}', craftExplain:'对应传统蜡染中的一层蜡或一层染，多层叠加形成丰富效果。蜡染作品通常需要多次画蜡、多次浸染才能完成。' },
+  { id:'2', name:'画蜡笔触', category:'effect', params:['数值（1-20）'], example:'画蜡笔触: 8;', craftExplain:'模拟铜刀（蜡刀）画蜡的笔触粗细。传统蜡染使用铜制蜡刀蘸熔蜡作画，不同粗细的蜡刀产生不同的线条效果。' },
+  { id:'3', name:'点蜡密度', category:'effect', params:['百分比（0-100）'], example:'点蜡密度: 60;', craftExplain:'点蜡技法的疏密程度。点蜡是蜡染基本技法之一，用蜡刀点出圆点组成图案，疏密变化产生层次感。' },
+  { id:'4', name:'浸染深度', category:'effect', params:['数值（0-100）'], example:'浸染深度: 75;', craftExplain:'靛蓝浸染的深浅程度。传统蜡染使用蓝草发酵的靛蓝染料，浸染次数越多、时间越长，颜色越深。' },
+  { id:'5', name:'冰裂纹', category:'effect', params:['开启/关闭'], example:'冰裂纹: 开启;', craftExplain:'蜡染标志性的“冰纹”效果。染制过程中蜡层龟裂，染料渗入裂缝形成自然纹理，每一件作品的冰纹都独一无二。' },
+  { id:'6', name:'冰裂纹粗细', category:'effect', params:['数值（1-10）'], example:'冰裂纹粗细: 4;', craftExplain:'冰裂纹的粗细程度。蜡层越厚、折叠力度越大，产生的裂纹越粗。不同粗细的冰纹呈现不同的质感。' },
+  { id:'7', name:'冰裂纹密度', category:'effect', params:['数值（1-100）'], example:'冰裂纹密度: 50;', craftExplain:'冰裂纹的分布密度。蜡层龟裂的密集程度，与布料折叠方式、蜡的脆度有关。苗族蜡染中冰纹被视为作品的灵魂。' },
+  { id:'8', name:'晕染程度', category:'effect', params:['数值（0-20）'], example:'晕染程度: 5;', craftExplain:'染料渗透的边缘过渡效果。蜡层边缘的蜡液渗透到布料纤维中，形成自然的渐变过渡，是手工蜡染的自然特征。' },
+  { id:'9', name:'融合模式', category:'effect', params:['叠印/拼接/螺旋/交织'], example:'融合模式: 叠印;', craftExplain:'多层蜡染的组合方式。传统蜡染通过多次画蜡多次浸染实现多层效果，叠印是最常见的方式，上层镂空透出下层颜色。' },
+  { id:'10', name:'透明度', category:'effect', params:['数值（0-100）'], example:'透明度: 80;', craftExplain:'蜡层的透明程度。蜡层的厚薄影响染料渗透量，蜡越厚防染效果越好，蜡越薄则部分染料可渗入，产生半透明效果。' },
+  { id:'11', name:'动画', category:'global', params:['无/浸染/冰裂蔓延/图案融合'], example:'动画: 浸染;', craftExplain:'动态效果类型。可模拟浸染过程中颜色由浅入深、冰裂纹逐渐蔓延、图案逐步融合的蜡染制作过程。' },
+  { id:'12', name:'画布底色', category:'global', params:['靛蓝/本白/土黄'], example:'画布底色: 土黄;', craftExplain:'土布底色模拟。传统蜡染使用手工纺织的土棉布，本色为米黄色或本白色，染后留白部分呈现布料原色。' },
+];
+
+/* ---------- 状态 ---------- */
+let layers = [];
+let globalConfig = { ...DEFAULT_GLOBAL };
+let currentCode = '';
+let selectedLayerId = null;
+let codeHistory = [];
+let codeError = null;
+let isPlaying = false;
+let animationProgress = 1;
+let raf = null;
+let isSyncingFromCode = false;
+let dragging = null;
+let loadedImages = {};
+let textureCanvas = null;
+
+/* ---------- 工具函数 ---------- */
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function parseNum(v){ const n = parseFloat(String(v).trim()); return isNaN(n) ? 0 : n; }
+function parseBool(v){ const s = String(v).trim().toLowerCase(); return ['开启','true','1','是','on'].includes(s); }
+function parsePair(v){ const p = String(v).split(/[,，]/).map(s => parseFloat(s.trim())); return [isNaN(p[0])?0:p[0], isNaN(p[1])?0:p[1]]; }
+function fmtTime(ts){ const d = new Date(ts); return [d.getHours(),d.getMinutes(),d.getSeconds()].map(n => String(n).padStart(2,'0')).join(':'); }
+
+/* ============================================================
+ * BatikScript 解析器 / 生成器
+ * ============================================================ */
+function parseBlockProps(block){
+  const props = [];
+  const lines = block.split(/[;；\n]/);
+  for (const line of lines){
+    const t = line.trim();
+    if (!t) continue;
+    const m = t.match(/^([^:：]+)[:：](.*)$/);
+    if (m) props.push([m[1].trim(), m[2].trim()]);
+  }
+  return props;
+}
+
+function parseBatikScript(code, existing){
+  const errors = [];
+  const parsedLayers = [];
+  let parsedGlobal = { ...DEFAULT_GLOBAL };
+  const clean = code.split('\n').map(l => { const i = l.indexOf('//'); return i >= 0 ? l.slice(0, i) : l; }).join('\n');
+  const re = /图层\s*\[?(\d+)\]?\s*\{([\s\S]*?)\}/g;
+  let m;
+  while ((m = re.exec(clean)) !== null){
+    const index = parseInt(m[1], 10);
+    const block = m[2];
+    const props = parseBlockProps(block);
+    const prev = (existing || []).find(l => l.index === index);
+    const fx = { ...(prev ? prev.effects : DEFAULT_EFFECTS) };
+    let x = prev ? prev.x : 50, y = prev ? prev.y : 50;
+    let w = prev ? prev.width : 220, h = prev ? prev.height : 220;
+    let rot = prev ? prev.rotation : 0;
+    let imageSrc = prev ? prev.imageSrc : '', name = prev ? prev.name : '图层' + index, imageId = prev ? prev.imageId : 'img' + index;
+    for (const [k, v] of props){
+      switch (k){
+        case '素材': name = String(v).replace(/^["']|["']$/g,'').trim(); imageId = name; break;
+        case '位置': { const [a,b] = parsePair(v); x = a; y = b; break; }
+        case '大小': { const [a,b] = parsePair(v); w = a; h = b; break; }
+        case '旋转': rot = parseNum(v); break;
+        case '画蜡笔触': fx.strokeWidth = clamp(parseNum(v), 1, 20); break;
+        case '点蜡密度': fx.dotDensity = clamp(parseNum(v), 0, 100); break;
+        case '浸染深度': fx.dyeDepth = clamp(parseNum(v), 0, 100); break;
+        case '冰裂纹': fx.iceCrack = parseBool(v); break;
+        case '冰裂纹粗细': fx.iceCrackWidth = clamp(parseNum(v), 1, 10); break;
+        case '冰裂纹密度': fx.iceCrackDensity = clamp(parseNum(v), 1, 100); break;
+        case '晕染程度': fx.blurAmount = clamp(parseNum(v), 0, 20); break;
+        case '融合模式': if (BLEND_MODES.includes(String(v).trim())) fx.blendMode = String(v).trim(); break;
+        case '透明度': fx.opacity = clamp(parseNum(v), 0, 100); break;
+      }
+    }
+    parsedLayers.push({ id: prev ? prev.id : 'layer-' + Date.now() + '-' + index, index, imageId, imageSrc, name, x, y, width: w, height: h, rotation: rot, zIndex: prev ? prev.zIndex : index, effects: fx });
+  }
+  const gm = clean.match(/全局\s*\{([\s\S]*?)\}/);
+  if (gm){
+    for (const [k, v] of parseBlockProps(gm[1])){
+      const val = String(v).trim();
+      switch (k){
+        case '动画': if (ANIM_TYPES.includes(val)) parsedGlobal.animation = val; break;
+        case '动画速度': parsedGlobal.animationSpeed = clamp(parseNum(v), 1, 10); break;
+        case '动画循环': parsedGlobal.animationLoop = parseBool(v); break;
+        case '画布底色': if (BG_TYPES.includes(val)) parsedGlobal.canvasBg = val; break;
+      }
+    }
+  }
+  if (parsedLayers.length === 0 && !gm) errors.push('未识别到有效的图层或全局配置，请检查语法');
+  parsedLayers.sort((a,b) => a.index - b.index);
+  return { layers: parsedLayers, globalConfig: parsedGlobal, errors };
+}
+
+function generateBatikCode(ls, gc){
+  const out = [];
+  out.push('// 蜡染AI创作工坊 · BatikScript');
+  out.push('// 基于传统蜡染工艺语法，全中文关键字');
+  out.push('');
+  ls.forEach(layer => {
+    out.push('图层[' + layer.index + '] {');
+    out.push('  素材: "' + layer.name + '";');
+    out.push('  位置: ' + Math.round(layer.x) + ', ' + Math.round(layer.y) + ';');
+    out.push('  大小: ' + Math.round(layer.width) + ', ' + Math.round(layer.height) + ';');
+    out.push('  旋转: ' + Math.round(layer.rotation) + ';');
+    out.push('');
+    out.push('  // 蜡染效果');
+    out.push('  画蜡笔触: ' + layer.effects.strokeWidth + ';');
+    out.push('  点蜡密度: ' + layer.effects.dotDensity + ';');
+    out.push('  浸染深度: ' + layer.effects.dyeDepth + ';');
+    out.push('  冰裂纹: ' + (layer.effects.iceCrack ? '开启' : '关闭') + ';');
+    out.push('  冰裂纹粗细: ' + layer.effects.iceCrackWidth + ';');
+    out.push('  冰裂纹密度: ' + layer.effects.iceCrackDensity + ';');
+    out.push('  晕染程度: ' + layer.effects.blurAmount + ';');
+    out.push('  融合模式: ' + layer.effects.blendMode + ';');
+    out.push('  透明度: ' + layer.effects.opacity + ';');
+    out.push('}');
+    out.push('');
+  });
+  out.push('全局 {');
+  out.push('  动画: ' + gc.animation + ';');
+  out.push('  动画速度: ' + gc.animationSpeed + ';');
+  out.push('  动画循环: ' + (gc.animationLoop ? '开启' : '关闭') + ';');
+  out.push('  画布底色: ' + gc.canvasBg + ';');
+  out.push('}');
+  return out.join('\n');
+}
+
+function getDefaultCode(){
+  return '// 蜡染AI创作工坊 · 欢迎使用 BatikScript\n// 上传图片后，AI 将自动生成对应代码\n// 你也可以直接编辑代码，画布实时同步效果\n\n全局 {\n  动画: 无;\n  动画速度: 5;\n  动画循环: 关闭;\n  画布底色: 土黄;\n}\n';
+}
+
+/* ============================================================
+ * 蜡染效果渲染
+ * ============================================================ */
+function ensureTexture(){
+  if (textureCanvas) return textureCanvas;
+  const c = document.createElement('canvas'); c.width = CANVAS_W; c.height = CANVAS_H;
+  const g = c.getContext('2d');
+  for (let x = 0; x < CANVAS_W; x += 4){ g.strokeStyle = 'rgba(120,100,70,0.045)'; g.beginPath(); g.moveTo(x, 0); g.lineTo(x, CANVAS_H); g.stroke(); }
+  for (let y = 0; y < CANVAS_H; y += 4){ g.strokeStyle = 'rgba(120,100,70,0.045)'; g.beginPath(); g.moveTo(0, y); g.lineTo(CANVAS_W, y); g.stroke(); }
+  for (let i = 0; i < 5000; i++){ g.fillStyle = 'rgba(90,75,55,' + (0.015 + Math.random() * 0.035).toFixed(3) + ')'; g.fillRect(Math.random() * CANVAS_W, Math.random() * CANVAS_H, 1.3, 1.3); }
+  textureCanvas = c;
+  return c;
+}
+
+function drawCrackBranch(g, x, y, angle, length, depth, maxDepth){
+  if (depth >= maxDepth || length < 8) return;
+  const ex = x + Math.cos(angle) * length, ey = y + Math.sin(angle) * length;
+  g.beginPath(); g.moveTo(x, y);
+  const mx = (x + ex) / 2 + (Math.random() - 0.5) * length * 0.2;
+  const my = (y + ey) / 2 + (Math.random() - 0.5) * length * 0.2;
+  g.quadraticCurveTo(mx, my, ex, ey); g.stroke();
+  const ba = 0.4 + Math.random() * 0.5;
+  const bl = length * (0.5 + Math.random() * 0.3);
+  drawCrackBranch(g, ex, ey, angle - ba, bl, depth + 1, maxDepth);
+  drawCrackBranch(g, ex, ey, angle + ba, bl * 0.8, depth + 1, maxDepth);
+}
+
+function generateIceCrackTexture(w, h, crackWidth, density){
+  const c = document.createElement('canvas'); c.width = Math.max(1, Math.floor(w)); c.height = Math.max(1, Math.floor(h));
+  const g = c.getContext('2d');
+  g.strokeStyle = 'rgba(10,25,45,0.55)';
+  g.lineWidth = Math.max(0.5, crackWidth * 0.5);
+  g.lineCap = 'round';
+  const n = Math.floor((density / 100) * 30) + 3;
+  for (let i = 0; i < n; i++){
+    drawCrackBranch(g, Math.random() * w, Math.random() * h, Math.random() * Math.PI * 2, 20 + Math.random() * 70, 0, 4);
+  }
+  return c;
+}
+
+function renderLayer(img, fx, x, y, w, h, rot, isTop, hasBelow){
+  ctx.save();
+  ctx.translate(x + w / 2, y + h / 2);
+  ctx.rotate(rot * Math.PI / 180);
+  ctx.translate(-w / 2, -h / 2);
+
+  let dyeMult = 1, crackMult = 1, blendMult = 1;
+  if (globalConfig.animation === '浸染') dyeMult = animationProgress;
+  else if (globalConfig.animation === '冰裂蔓延') crackMult = animationProgress;
+  else if (globalConfig.animation === '图案融合' && hasBelow) blendMult = animationProgress;
+
+  ctx.globalAlpha = (fx.opacity / 100) * blendMult;
+
+  const ow = Math.max(1, Math.floor(w)), oh = Math.max(1, Math.floor(h));
+  const off = document.createElement('canvas'); off.width = ow; off.height = oh;
+  const g = off.getContext('2d');
+  g.drawImage(img, 0, 0, ow, oh);
+
+  if (fx.blurAmount > 0){
+    g.filter = 'blur(' + (fx.blurAmount * 0.3).toFixed(1) + 'px)';
+    const tmp = document.createElement('canvas'); tmp.width = ow; tmp.height = oh;
+    tmp.getContext('2d').drawImage(off, 0, 0);
+    g.filter = 'none'; g.clearRect(0, 0, ow, oh); g.drawImage(tmp, 0, 0);
+  }
+
+  if (fx.dyeDepth > 0 && dyeMult > 0){
+    const depth = (fx.dyeDepth / 100) * dyeMult;
+    try {
+      const id = g.getImageData(0, 0, ow, oh), d = id.data;
+      for (let i = 0; i < d.length; i += 4){
+        const br = (d[i] + d[i+1] + d[i+2]) / 3 / 255;
+        const dr = 26 + br * 20, dg = 58 + br * 30, db = 92 + br * 40;
+        d[i]   = Math.round(d[i]   * (1 - depth) + dr * depth);
+        d[i+1] = Math.round(d[i+1] * (1 - depth) + dg * depth);
+        d[i+2] = Math.round(d[i+2] * (1 - depth) + db * depth);
+      }
+      g.putImageData(id, 0, 0);
+    } catch(e){ /* 忽略跨域限制场景 */ }
+  }
+
+  if (fx.dotDensity > 0){
+    g.save();
+    g.globalAlpha = 0.09 * (fx.dotDensity / 100);
+    g.fillStyle = '#ffffff';
+    const n = Math.floor((fx.dotDensity / 100) * 42);
+    for (let i = 0; i < n; i++){
+      g.beginPath(); g.arc(Math.random() * ow, Math.random() * oh, 1 + Math.random() * 2.4, 0, Math.PI * 2); g.fill();
+    }
+    g.restore();
+  }
+
+  if (fx.strokeWidth > 0){
+    g.save();
+    g.globalAlpha = 0.045 * (fx.strokeWidth / 20);
+    g.strokeStyle = '#ffffff';
+    g.lineWidth = Math.max(0.5, fx.strokeWidth * 0.15);
+    const seed = fx.strokeWidth * 137;
+    for (let i = 0; i < 14; i++){
+      const sx = (Math.sin(seed + i * 0.7) * 0.5 + 0.5) * ow;
+      const sy = (Math.cos(seed + i * 1.3) * 0.5 + 0.5) * oh;
+      const ex = (Math.sin(seed + i * 2.1) * 0.5 + 0.5) * ow;
+      const ey = (Math.cos(seed + i * 1.7) * 0.5 + 0.5) * oh;
+      g.beginPath(); g.moveTo(sx, sy);
+      g.quadraticCurveTo((sx+ex)/2 + (Math.random()-0.5)*ow*0.2, (sy+ey)/2 + (Math.random()-0.5)*oh*0.2, ex, ey);
+      g.stroke();
+    }
+    g.restore();
+  }
+
+  if (fx.iceCrack && fx.iceCrackDensity > 0 && crackMult > 0){
+    g.drawImage(generateIceCrackTexture(ow, oh, fx.iceCrackWidth, fx.iceCrackDensity * crackMult), 0, 0);
+  }
+
+  switch (fx.blendMode){
+    case '叠印': ctx.globalCompositeOperation = 'multiply'; break;
+    case '拼接': ctx.globalCompositeOperation = 'source-over'; break;
+    case '螺旋':
+    case '交织': ctx.globalCompositeOperation = 'overlay'; break;
+    default: ctx.globalCompositeOperation = 'source-over';
+  }
+  ctx.drawImage(off, 0, 0, w, h);
+  ctx.restore();
+}
+
+function renderCanvas(){
+  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+  ctx.fillStyle = BG_COLORS[globalConfig.canvasBg] || BG_COLORS['土黄'];
+  ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+  ctx.globalAlpha = 0.5;
+  ctx.drawImage(ensureTexture(), 0, 0, CANVAS_W, CANVAS_H);
+  ctx.globalAlpha = 1;
+
+  const sorted = [...layers].sort((a,b) => a.zIndex - b.zIndex);
+  sorted.forEach((layer, i) => {
+    const img = loadedImages[layer.id];
+    if (!img || !layer.imageSrc) return;
+    renderLayer(img, layer.effects, layer.x, layer.y, layer.width, layer.height, layer.rotation, i === sorted.length - 1, sorted.length > 1);
+  });
+
+  // 选中框
+  const sel = layers.find(l => l.id === selectedLayerId);
+  if (sel && sel.imageSrc){
+    selectionEl.style.display = 'block';
+    selectionEl.style.left = (sel.x / CANVAS_W * 100) + '%';
+    selectionEl.style.top = (sel.y / CANVAS_H * 100) + '%';
+    selectionEl.style.width = (sel.width / CANVAS_W * 100) + '%';
+    selectionEl.style.height = (sel.height / CANVAS_H * 100) + '%';
+    selectionEl.style.transform = 'rotate(' + sel.rotation + 'deg)';
+    selectionEl.style.transformOrigin = 'center center';
+  } else {
+    selectionEl.style.display = 'none';
+  }
+
+  emptyHint.style.display = layers.length ? 'none' : 'flex';
+  layerCountEl.textContent = layers.length + '/3 图层';
+  $('export-img-btn').disabled = layers.length === 0;
+  updatePlaybackUI();
+}
+
+/* ============================================================
+ * 图层操作
+ * ============================================================ */
+function loadImageForLayer(layer){
+  const img = new Image();
+  img.onload = () => { loadedImages[layer.id] = img; renderCanvas(); };
+  img.onerror = () => { toast('图片加载失败：' + layer.name); };
+  img.src = layer.imageSrc;
+}
+
+function addLayerFromSrc(src, name, cb){
+  const img = new Image();
+  img.onload = () => {
+    if (layers.length >= MAX_LAYERS){ toast('最多上传 ' + MAX_LAYERS + ' 张蜡染素材'); return; }
+    const index = layers.length + 1;
+    const maxSize = 260;
+    let w = img.width, h = img.height;
+    if (w > h){ if (w > maxSize){ h = (h / w) * maxSize; w = maxSize; } }
+    else { if (h > maxSize){ w = (w / h) * maxSize; h = maxSize; } }
+    const layer = {
+      id: 'layer-' + Date.now() + '-' + Math.floor(Math.random()*1e4),
+      index,
+      imageId: '图片' + index,
+      imageSrc: src,
+      name: name || ('图片' + index),
+      x: 40 + (index - 1) * 42,
+      y: 40 + (index - 1) * 42,
+      width: Math.round(w), height: Math.round(h),
+      rotation: 0,
+      zIndex: index,
+      effects: { ...DEFAULT_EFFECTS }
+    };
+    layers.push(layer);
+    loadImageForLayer(layer);
+    syncCodeFromState('上传素材：' + layer.name);
+    renderCanvas();
+    toast('已添加「' + layer.name + '」');
+    if (cb) cb();
+  };
+  img.onerror = () => toast('无法读取图片，请换一张试试');
+  img.src = src;
+}
+
+function handleFiles(files){
+  const arr = Array.from(files).filter(f => ['image/png','image/jpeg','image/jpg','image/webp'].includes(f.type));
+  if (!arr.length){ toast('请上传 PNG / JPG / WebP 格式的图片'); return; }
+  if (layers.length + arr.length > MAX_LAYERS){ toast('最多同时支持 ' + MAX_LAYERS + ' 张蜡染图片'); return; }
+  arr.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = e => addLayerFromSrc(e.target.result, f.name.replace(/\.[^.]+$/, ''));
+    reader.readAsDataURL(f);
+  });
+  fileInput.value = '';
+}
+
+function loadSample(idx){
+  if (layers.length >= MAX_LAYERS){ toast('画布已满，最多 3 张素材'); return; }
+  addLayerFromSrc(SAMPLE_IMAGES[idx], '内置示例' + (idx + 1));
+}
+
+/* ---------- 图层操作（右键菜单） ---------- */
+function duplicateLayer(id){
+  const target = layers.find(l => l.id === id);
+  if (!target || layers.length >= MAX_LAYERS){ toast('最多 3 个图层'); return; }
+  const newIndex = Math.max(...layers.map(l => l.index)) + 1;
+  const copy = { ...target, id: 'layer-' + Date.now(), index: newIndex, zIndex: newIndex, x: target.x + 30, y: target.y + 30, name: target.name + ' 副本', imageSrc: target.imageSrc };
+  layers.push(copy);
+  loadImageForLayer(copy);
+  syncCodeFromState('复制图层：' + copy.name);
+  renderCanvas();
+}
+function deleteLayer(id){
+  layers = layers.filter(l => l.id !== id);
+  if (selectedLayerId === id) selectedLayerId = null;
+  syncCodeFromState('删除图层');
+  renderCanvas();
+}
+function bringFront(id){ const max = Math.max(...layers.map(l => l.zIndex)); layers = layers.map(l => l.id === id ? { ...l, zIndex: max + 1 } : l); syncCodeFromState('图层置顶'); renderCanvas(); }
+function sendBack(id){ const min = Math.min(...layers.map(l => l.zIndex)); layers = layers.map(l => l.id === id ? { ...l, zIndex: min - 1 } : l); syncCodeFromState('图层置底'); renderCanvas(); }
+
+/* ---------- 画布交互 ---------- */
+function getCanvasCoords(e){
+  const r = canvas.getBoundingClientRect();
+  return { x: (e.clientX - r.left) * (CANVAS_W / r.width), y: (e.clientY - r.top) * (CANVAS_H / r.height) };
+}
+function hitTest(x, y){
+  const sorted = [...layers].sort((a,b) => b.zIndex - a.zIndex);
+  for (const layer of sorted){
+    if (!layer.imageSrc) continue;
+    const cx = layer.x + layer.width / 2, cy = layer.y + layer.height / 2;
+    const dx = x - cx, dy = y - cy;
+    const ang = -(layer.rotation * Math.PI) / 180;
+    const rx = dx * Math.cos(ang) - dy * Math.sin(ang);
+    const ry = dx * Math.sin(ang) + dy * Math.cos(ang);
+    if (Math.abs(rx) <= layer.width / 2 && Math.abs(ry) <= layer.height / 2) return layer;
+  }
+  return null;
+}
+
+canvas.addEventListener('mousedown', e => {
+  const { x, y } = getCanvasCoords(e);
+  const hit = hitTest(x, y);
+  if (hit){
+    selectedLayerId = hit.id;
+    dragging = { id: hit.id, sx: x, sy: y, ox: hit.x, oy: hit.y };
+    canvas.style.cursor = 'grabbing';
+  } else {
+    selectedLayerId = null;
+  }
+  hideCtxMenu();
+  renderCanvas();
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const { x, y } = getCanvasCoords(e);
+  const layer = layers.find(l => l.id === dragging.id);
+  if (!layer) return;
+  layer.x = clamp(dragging.ox + (x - dragging.sx), -layer.width + 30, CANVAS_W - 30);
+  layer.y = clamp(dragging.oy + (y - dragging.sy), -layer.height + 30, CANVAS_H - 30);
+  renderCanvas();
+});
+window.addEventListener('mouseup', () => {
+  if (dragging){
+    dragging = null;
+    canvas.style.cursor = 'crosshair';
+    syncCodeFromState('调整图层位置');
+  }
+});
+
+canvas.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  const { x, y } = getCanvasCoords(e);
+  const hit = hitTest(x, y);
+  if (hit){
+    selectedLayerId = hit.id;
+    renderCanvas();
+    showCtxMenu(e.clientX, e.clientY, hit.id);
+  }
+});
+
+/* ---------- 右键菜单 ---------- */
+function showCtxMenu(x, y, layerId){
+  ctxMenu._id = layerId;
+  ctxMenu.style.left = Math.min(x, window.innerWidth - 160) + 'px';
+  ctxMenu.style.top = Math.min(y, window.innerHeight - 180) + 'px';
+  ctxMenu.classList.add('show');
+}
+function hideCtxMenu(){ ctxMenu.classList.remove('show'); }
+document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) hideCtxMenu(); });
+ctxMenu.addEventListener('click', e => {
+  const act = e.target.closest('.mi')?.dataset.act;
+  const id = ctxMenu._id;
+  if (!act || !id) return;
+  if (act === 'dup') duplicateLayer(id);
+  if (act === 'front') bringFront(id);
+  if (act === 'back') sendBack(id);
+  if (act === 'del') deleteLayer(id);
+  hideCtxMenu();
+});
+
+/* ============================================================
+ * 代码同步与历史
+ * ============================================================ */
+function syncCodeFromState(summary){
+  currentCode = generateBatikCode(layers, globalConfig);
+  editor.value = currentCode;
+  codeError = null;
+  codeBadge.className = 'badge ok';
+  codeBadge.textContent = '语法正确';
+  codeErr.style.display = 'none';
+  if (summary) saveHistory(summary);
+}
+
+function applyCodeToState(code, silent){
+  const result = parseBatikScript(code, layers);
+  if (result.errors.length){
+    codeError = result.errors.join('；');
+    codeBadge.className = 'badge err';
+    codeBadge.textContent = '语法错误';
+    codeErr.textContent = '⚠ ' + codeError;
+    codeErr.style.display = 'block';
+    return;
+  }
+  codeError = null;
+  codeBadge.className = 'badge ok';
+  codeBadge.textContent = '语法正确';
+  codeErr.style.display = 'none';
+  layers = result.layers;
+  globalConfig = result.globalConfig;
+  if (!layers.find(l => l.id === selectedLayerId)) selectedLayerId = null;
+  renderCanvas();
+  if (!silent) saveHistory('手动修改代码');
+}
+
+function saveHistory(summary){
+  codeHistory.push({ id: 'v-' + Date.now(), timestamp: Date.now(), code: currentCode, summary: summary || '代码变更' });
+  if (codeHistory.length > 20) codeHistory = codeHistory.slice(-20);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(codeHistory)); } catch(e){}
+  renderHistory();
+}
+
+function renderHistory(){
+  const box = $('history-box');
+  if (!codeHistory.length){
+    box.innerHTML = '<div class="empty">暂无历史版本<br>修改代码或上传图片后将自动保存版本</div>';
+    return;
+  }
+  box.innerHTML = '';
+  [...codeHistory].reverse().forEach((v, idx) => {
+    const real = codeHistory.length - 1 - idx;
+    const item = document.createElement('div');
+    item.className = 'hist-item';
+    item.innerHTML = '<div class="meta"><div class="time">v' + codeHistory.length + ' · ' + fmtTime(v.timestamp) + '</div><div class="sum">' + esc(v.summary) + '</div></div>' +
+      '<button class="restore">恢复</button>';
+    item.querySelector('.restore').addEventListener('click', () => restoreVersion(real));
+    box.appendChild(item);
+  });
+}
+
+function restoreVersion(idx){
+  const v = codeHistory[idx];
+  if (!v) return;
+  currentCode = v.code;
+  editor.value = v.code;
+  applyCodeToState(v.code, true);
+  saveHistory('回退到 ' + fmtTime(v.timestamp));
+  toast('已恢复到该版本');
+}
+
+/* ---------- 代码编辑事件 ---------- */
+let debounceTimer = null;
+editor.addEventListener('input', () => {
+  currentCode = editor.value;
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => applyCodeToState(editor.value), 450);
+});
+editor.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's'){
+    e.preventDefault();
+    clearTimeout(debounceTimer);
+    applyCodeToState(editor.value);
+    toast('代码已应用到画布');
+  }
+});
+editor.addEventListener('blur', () => {
+  clearTimeout(debounceTimer);
+  applyCodeToState(editor.value);
+});
+$('copy-code-btn').addEventListener('click', () => {
+  navigator.clipboard.writeText(currentCode).then(() => toast('代码已复制到剪贴板'), () => toast('复制失败'));
+});
+
+/* ============================================================
+ * AI 对话（内置 BatikScript 语法引擎）
+ * ============================================================ */
+const WELCOME = '你好！我是蜡染工坊的AI助手。\n\n我可以把你想做的蜡染效果翻译成 BatikScript 语法代码并实时渲染到画布上。试试对我说：\n\n- "给这张图加冰裂纹，染深一点"\n- "把两张图螺旋融合"\n- "做一个浸染动画"\n- "画布底色改成靛蓝"\n\n也可以先在右上角上传或加载示例蜡染图案。';
+
+function appendMsg(role, text){
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+  const b = document.createElement('div');
+  b.className = 'bubble';
+  if (role === 'ai') b.classList.add('fading');
+  b.innerHTML = text;
+  wrap.appendChild(b);
+  msgsBox.appendChild(wrap);
+  msgsBox.scrollTop = msgsBox.scrollHeight;
+  return wrap;
+}
+
+function renderAIText(text, note){
+  const blocks = [];
+  let t = text.replace(/```(?:batik)?\n?([\s\S]*?)```/g, (m, c) => { blocks.push(c.trim()); return '\u0000' + (blocks.length - 1) + '\u0000'; });
+  t = esc(t);
+  t = t.replace(/\u0000(\d+)\u0000/g, (m, i) => '<pre class="ai-code">' + esc(blocks[+i]) + '</pre>');
+  t = t.replace(/`([^`\n]+)`/g, '<code class="ai-inline">$1</code>');
+  t = t.replace(/\n/g, '<br>');
+  let html = t;
+  if (note) html += '<div class="craft"><b>工艺 · </b>' + esc(note) + '</div>';
+  return html;
+}
+
+function aiSay(text, note, applyFn, summary){
+  appendMsg('ai', renderAIText(text, note));
+  if (applyFn) applyFn();
+  if (summary) syncCodeFromState(summary);
+  renderCanvas();
+}
+
+function needsLayers(){
+  if (layers.length) return false;
+  aiSay('我还没有看到蜡染素材哦。请先点击右上角「上传图片」，或选择「示例图案」加载一张传统蜡染纹样，然后我就能为你生成对应效果了。', '传统蜡染以靛蓝为底色，通过蜡的遮挡与裂纹形成独一无二的纹样，先载入一张真实素材是创作的基础。');
+  return true;
+}
+
+function handleIntent(raw){
+  const t = String(raw).trim();
+  if (!t) return;
+
+  // 示例
+  if (/示例|样例/.test(t)){
+    loadSample(0);
+    aiSay('已为你加载内置示例蜡染图案（传统蓝靛花鸟纹样）。你可以继续告诉我想要的效果，例如「加冰裂纹，染深一点」，我会在它基础上生成语法代码。', '丹寨苗族蜡染以夸张生动的花鸟纹样著称，凤凰与牡丹寓意吉祥富贵，是苗族文化的自然表达。', null, null);
+    return;
+  }
+
+  // 帮助
+  if (/帮助|指令|怎么用|能做什么|功能|教程/.test(t)){
+    aiSay('我可以把自然语言翻译成 BatikScript 蜡染语法。常用指令示例：\n\n```batik\n// 效果指令\n冰裂纹: 开启;         // 标志性冰纹\n浸染深度: 80;         // 靛蓝染色深浅\n晕染程度: 8;          // 染料过渡\n画蜡笔触: 10;         // 铜刀笔触\n点蜡密度: 60;         // 点蜡疏密\n透明度: 60;           // 蜡层透明\n融合模式: 螺旋;       // 多图融合\n\n// 全局\n动画: 浸染;           // 动态效果\n画布底色: 靛蓝;       // 土布底色\n```\n\n直接告诉我「加冰裂纹」「染深一点」「两张图螺旋融合」「做个染色动画」就行。', 'BatikScript 的每一个关键字都来自真实蜡染工艺：画蜡、点蜡、浸染、冰裂——修改代码的过程，就是理解一门非遗技艺的过程。', null, null);
+    return;
+  }
+
+  // 重置
+  if (/重置|清空|清场|重新开始/.test(t)){
+    layers = []; globalConfig = { ...DEFAULT_GLOBAL };
+    selectedLayerId = null; isPlaying = false; animationProgress = 1;
+    syncCodeFromState('画布重置');
+    renderCanvas();
+    aiSay('画布已重置，代码已恢复默认。可以上传新的蜡染图片继续创作。', '蜡染创作常常从一块空白土布开始：磨布、熬蜡、画蜡，每一步都是仪式。', null, null);
+    return;
+  }
+
+  if (needsLayers()) return;
+
+  const allFx = () => layers.map(l => l.effects);
+
+  // 动画
+  if (/冰裂蔓延/.test(t)){
+    setAnim('冰裂蔓延');
+    aiSay('已添加冰裂蔓延动画：裂纹将从小到大逐渐扩散，像蜡层在染缸中缓缓龟裂。\n\n```batik\n动画: 冰裂蔓延;\n动画循环: 开启;\n```', '冰裂蔓延模拟的是浸染过程中蜡层受力龟裂的瞬间，苗族匠人甚至会刻意折叠布料让冰纹更丰富。', null, null);
+    return;
+  }
+  if (/融合动画|图案融合/.test(t)){
+    setAnim('图案融合');
+    aiSay('已添加图案融合动画：两张蜡染将像叠染一样从分离逐步交融。\n\n```batik\n动画: 图案融合;\n```', '图案融合对应传统蜡染中多次画蜡、多次浸染的叠染工艺，层次由浅入深。', null, null);
+    return;
+  }
+  if (/动画|浸染/.test(t)){
+    setAnim('浸染');
+    aiSay('已添加浸染动画：颜色将由浅入深，重现蜡染布料反复入缸浸染的过程。\n\n```batik\n动画: 浸染;\n动画速度: 6;\n```', '传统蜡染的藏青色要反复入缸十余次，每次浸染、氧化，颜色层层加深，这是时间赋予的颜色。', null, null);
+    return;
+  }
+
+  // 冰裂纹
+  if (/冰裂纹|冰纹/.test(t)){
+    allFx().forEach(fx => { fx.iceCrack = true; fx.iceCrackDensity = Math.max(fx.iceCrackDensity, 55); });
+    aiSay('已为所有图层开启冰裂纹，这是蜡染最具辨识度的灵魂效果。\n\n```batik\n冰裂纹: 开启;\n冰裂纹密度: 55;\n冰裂纹粗细: 3;\n```', '冰纹由蜡层在浸染中自然龟裂形成，染料渗入裂缝留下细密的纹理。每一件蜡染的冰纹都独一无二，是「不可复制的签名」。', null, '开启冰裂纹');
+    return;
+  }
+
+  // 染色深浅
+  if (/染深|深一点|加深|浓一点|颜色深/.test(t)){
+    allFx().forEach(fx => { fx.dyeDepth = clamp(fx.dyeDepth + 20, 0, 100); });
+    aiSay('已加深浸染深度，靛蓝更加浓郁。\n\n```batik\n浸染深度: ' + layers[0].effects.dyeDepth + ';\n```', '染色深度由浸染次数决定，经典藏青通常需要十几次入缸。数值越高，越接近老蜡染的厚重蓝。', null, '加深浸染深度');
+    return;
+  }
+  if (/染浅|浅一点|调浅|淡一点|颜色浅/.test(t)){
+    allFx().forEach(fx => { fx.dyeDepth = clamp(fx.dyeDepth - 20, 0, 100); });
+    aiSay('已调浅浸染深度，呈现更清新的浅蓝。\n\n```batik\n浸染深度: ' + layers[0].effects.dyeDepth + ';\n```', '浅染对应传统蜡染中的「嫩蓝」，年轻姑娘的衣裙常保留这种青涩的蓝色。', null, '调浅浸染深度');
+    return;
+  }
+
+  // 晕染
+  if (/晕染|模糊|柔和|过渡/.test(t)){
+    allFx().forEach(fx => { fx.blurAmount = clamp(fx.blurAmount + 5, 0, 20); });
+    aiSay('已增强晕染效果，模拟染料在布纤维中自然渗透的过渡。\n\n```batik\n晕染程度: ' + layers[0].effects.blurAmount + ';\n```', '蜡液在高温下会向布面微微渗开，形成边缘的朦胧过渡，这是机器印花无法模仿的手工痕迹。', null, '增强晕染效果');
+    return;
+  }
+
+  // 笔触
+  if (/笔触|画蜡|线条/.test(t)){
+    const to = /细/.test(t) ? 3 : 10;
+    allFx().forEach(fx => { fx.strokeWidth = to; });
+    aiSay('已设置画蜡笔触为「' + (to === 3 ? '细' : '粗') + '」。\n\n```batik\n画蜡笔触: ' + to + ';\n```', '传统蜡染以铜刀蘸蜡作画，粗刀画粗线、细刀画细线。织金蜡染以细密螺旋纹闻名，笔触极细。', null, '设置画蜡笔触');
+    return;
+  }
+
+  // 点蜡
+  if (/点蜡|点染|点出/.test(t)){
+    allFx().forEach(fx => { fx.dotDensity = 60; });
+    aiSay('已增加点蜡密度，模拟蜡刀点出的圆点肌理。\n\n```batik\n点蜡密度: 60;\n```', '点蜡是最古老的蜡染技法之一，用蜡刀尖蘸蜡点在布上，圆点排列成几何纹样，疏密有致。', null, '增加点蜡密度');
+    return;
+  }
+
+  // 融合模式
+  if (/螺旋/.test(t)){
+    if (layers.length < 2){ aiSay('螺旋融合需要至少两张蜡染素材，请再上传一张图片。', '多图融合模拟传统蜡染的多层叠染，素材越多，层次越丰富。'); return; }
+    allFx().forEach(fx => { fx.blendMode = '螺旋'; fx.opacity = 70; });
+    aiSay('已设置「螺旋」融合模式，两张图案将以中心为轴螺旋交织。\n\n```batik\n融合模式: 螺旋;\n透明度: 70;\n```', '螺旋纹是苗族蜡染的经典母题，织金蜡染的螺旋细密如涟漪，象征水的流动与生命的循环。', null, '设置螺旋融合');
+    return;
+  }
+  if (/交织/.test(t)){
+    if (layers.length < 2){ aiSay('交织融合需要至少两张蜡染素材，请再上传一张图片。', null); return; }
+    allFx().forEach(fx => { fx.blendMode = '交织'; fx.opacity = 75; });
+    aiSay('已设置「交织」融合模式，两张图案的纹理将互相穿插。\n\n```batik\n融合模式: 交织;\n透明度: 75;\n```', '交织对应织物经纬线的交错感，蜡染纹样与布纹方向相互呼应。', null, '设置交织融合');
+    return;
+  }
+  if (/拼接/.test(t)){
+    if (layers.length < 2){ aiSay('拼接融合需要至少两张蜡染素材，请再上传一张图片。', null); return; }
+    allFx().forEach(fx => { fx.blendMode = '拼接'; });
+    aiSay('已设置「拼接」融合模式，图案按各自位置组合成一幅新构图。\n\n```batik\n融合模式: 拼接;\n```', '拼接对应蜡染中的拼布传统，不同纹样的布片拼接成完整衣料，是节俭与美学的结合。', null, '设置拼接融合');
+    return;
+  }
+  if (/叠印|融合|叠加|叠/.test(t)){
+    if (layers.length < 2){ aiSay('融合效果需要至少两张蜡染素材。你可以先加载第二张示例图案，或再上传一张图片。', '多层蜡染通过多次画蜡、多次浸染叠出层次，素材越多，融合效果越丰富。'); return; }
+    allFx().forEach(fx => { fx.blendMode = '叠印'; fx.opacity = 70; });
+    aiSay('已设置「叠印」融合模式，模拟多层蜡叠染，上层镂空透出下层颜色。\n\n```batik\n融合模式: 叠印;\n透明度: 70;\n```', '叠印是最经典的蜡染组合方式：先画一层蜡染一层，再画一层再染，层层叠出丰富图案。', null, '设置叠印融合');
+    return;
+  }
+
+  // 循环
+  if (/循环/.test(t)){
+    globalConfig.animationLoop = true;
+    syncCodeFromState('开启动画循环');
+    aiSay('已开启动画循环播放。\n\n```batik\n动画循环: 开启;\n```', null, null, null);
+    return;
+  }
+
+  // 底色
+  if (/底色|背景/.test(t)){
+    let bg = null;
+    if (/靛蓝/.test(t)) bg = '靛蓝';
+    else if (/本白|白/.test(t)) bg = '本白';
+    else if (/土黄|黄/.test(t)) bg = '土黄';
+    if (bg){
+      globalConfig.canvasBg = bg;
+      syncCodeFromState('设置画布底色：' + bg);
+      aiSay('已设置画布底色为「' + bg + '」。\n\n```batik\n画布底色: ' + bg + ';\n```', bg === '靛蓝' ? '靛蓝底是蜡染最常见的面貌，蓝白对比强烈、庄重典雅。' : '土布本色是米黄或本白，染后留白部分呈现布料原色。', null, null);
+    } else {
+      aiSay('画布底色支持：靛蓝、本白、土黄。例如说「底色改成靛蓝」。', null, null, null);
+    }
+    return;
+  }
+
+  // 大小
+  if (/放大|变大|缩小|变小|大小/.test(t)){
+    const scale = /放大|变大/.test(t) ? 1.25 : 0.8;
+    layers.forEach(l => { l.width = Math.round(l.width * scale); l.height = Math.round(l.height * scale); });
+    syncCodeFromState(scale > 1 ? '放大图层' : '缩小图层');
+    aiSay('已' + (scale > 1 ? '放大' : '缩小') + '所有图层，大小由代码中的「大小: 宽, 高;」控制。\n\n```batik\n大小: ' + layers[0].width + ', ' + layers[0].height + ';\n```', null, null, null);
+    return;
+  }
+
+  // 旋转
+  if (/旋转|转一下|转 /.test(t)){
+    layers.forEach(l => { l.rotation = (l.rotation + 15) % 360; });
+    syncCodeFromState('旋转图层');
+    aiSay('已旋转 15°，旋转角度由「旋转: 角度;」控制。\n\n```batik\n旋转: ' + layers[0].rotation + ';\n```', null, null, null);
+    return;
+  }
+
+  // 移动
+  if (/移动|位置|挪|靠/.test(t)){
+    layers.forEach(l => { l.x = clamp(l.x + 30, 0, CANVAS_W - l.width); l.y = clamp(l.y + 30, 0, CANVAS_H - l.height); });
+    syncCodeFromState('移动图层');
+    aiSay('已微调图层位置。你也可以直接在画布上用鼠标拖拽图层到任意位置，代码会自动同步。\n\n```batik\n位置: ' + layers[0].x + ', ' + layers[0].y + ';\n```', null, null, null);
+    return;
+  }
+
+  // 默认
+  aiSay('我理解你的创作意图，但这条指令超出了当前语法引擎的词库。你可以试试：\n\n- "加冰裂纹" / "染深一点" / "染浅一点"\n- "增加晕染" / "画蜡笔触粗一点" / "点蜡密一点"\n- "两张图螺旋融合" / "叠印融合"\n- "做浸染动画" / "冰裂蔓延动画"\n- "底色改成靛蓝" / "开启循环"\n\n也可以在左下「语法手册」查看全部 BatikScript 指令，在「当前代码」手动修改后按 Ctrl+S 应用。', 'BatikScript 的每个关键字都对应一门真实工艺：画蜡、点蜡、浸染、冰裂。语法即非遗，修改即传承。', null, null);
+}
+
+function setAnim(type){
+  if (!type) return;
+  globalConfig.animation = type;
+  if (type !== '无'){ isPlaying = false; animationProgress = 1; }
+  syncCodeFromState('设置动画：' + type);
+}
+
+function updatePlaybackUI(){
+  const hasAnim = globalConfig.animation !== '无';
+  playbackBar.classList.toggle('show', hasAnim);
+  if (hasAnim){
+    animNameEl.textContent = globalConfig.animation + (globalConfig.animation === '浸染' ? '动画' : '');
+    animPctEl.textContent = Math.round(animationProgress * 100) + '%';
+    progressEl.value = Math.round(animationProgress * 100);
+  }
+}
+
+function sendMessage(){
+  const text = chatInput.value.trim();
+  if (!text) return;
+  appendMsg('user', esc(text).replace(/\n/g, '<br>'));
+  chatInput.value = '';
+  sendBtn.disabled = true;
+  chatInput.disabled = true;
+  setTimeout(() => { handleIntent(text); sendBtn.disabled = false; chatInput.disabled = false; chatInput.focus(); }, 350);
+}
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+/* ============================================================
+ * 播放控制
+ * ============================================================ */
+function togglePlay(){
+  if (!layers.length){ toast('请先上传图片再播放动画'); return; }
+  if (globalConfig.animation === '无'){ toast('当前无动画，可在代码中加入「动画: 浸染」等指令'); return; }
+  if (isPlaying){
+    isPlaying = false;
+    cancelAnimationFrame(raf);
+    setPlayIcon();
+    return;
+  }
+  if (animationProgress >= 1) animationProgress = 0;
+  isPlaying = true;
+  setPlayIcon();
+  let last = performance.now();
+  const tick = now => {
+    if (!isPlaying) return;
+    const dt = (now - last) / 1000; last = now;
+    animationProgress = Math.min(1, animationProgress + dt * globalConfig.animationSpeed * 0.12);
+    renderCanvas();
+    if (animationProgress >= 1){
+      if (globalConfig.animationLoop){ animationProgress = 0; raf = requestAnimationFrame(tick); return; }
+      isPlaying = false; setPlayIcon(); return;
+    }
+    raf = requestAnimationFrame(tick);
+  };
+  raf = requestAnimationFrame(tick);
+}
+function setPlayIcon(){
+  playIcon.innerHTML = isPlaying
+    ? '<rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>'
+    : '<polygon points="6 3 20 12 6 21 6 3"/>';
+}
+$('play-btn').addEventListener('click', togglePlay);
+$('restart-btn').addEventListener('click', () => { isPlaying = false; cancelAnimationFrame(raf); animationProgress = 0; renderCanvas(); toast('已回到起始帧'); });
+progressEl.addEventListener('input', () => {
+  isPlaying = false; cancelAnimationFrame(raf); setPlayIcon();
+  animationProgress = progressEl.value / 100;
+  renderCanvas();
+});
+loopSwitch.addEventListener('click', () => {
+  globalConfig.animationLoop = !globalConfig.animationLoop;
+  loopSwitch.classList.toggle('on', globalConfig.animationLoop);
+  loopSwitch.setAttribute('aria-checked', globalConfig.animationLoop);
+  syncCodeFromState(globalConfig.animationLoop ? '开启循环' : '关闭循环');
+  toast(globalConfig.animationLoop ? '循环播放已开启' : '循环播放已关闭');
+});
+$('screenshot-btn').addEventListener('click', () => {
+  if (!layers.length){ toast('画布还没有内容'); return; }
+  const a = document.createElement('a');
+  a.download = '蜡染截屏_' + Date.now() + '.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  toast('已保存当前帧');
+});
+
+/* ============================================================
+ * 工具栏
+ * ============================================================ */
+$('upload-btn').addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+$('reset-btn').addEventListener('click', () => {
+  layers = []; globalConfig = { ...DEFAULT_GLOBAL };
+  selectedLayerId = null; isPlaying = false; animationProgress = 1;
+  cancelAnimationFrame(raf); setPlayIcon();
+  syncCodeFromState('画布重置');
+  renderCanvas();
+  toast('画布已重置');
+});
+$('export-img-btn').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.download = '蜡染作品_' + Date.now() + '.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  toast('图片已导出');
+});
+$('code-drop-btn').addEventListener('click', e => openMenu(e.currentTarget, [
+  { label: '下载 .batik 文件', act: () => {
+      const blob = new Blob([currentCode], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.download = '蜡染代码_' + Date.now() + '.batik';
+      a.href = URL.createObjectURL(blob);
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('代码文件已下载');
+    } },
+  { label: '复制到剪贴板', act: () => navigator.clipboard.writeText(currentCode).then(() => toast('已复制'), () => toast('复制失败')) },
+]));
+$('sample-btn').addEventListener('click', e => openMenu(e.currentTarget, [
+  { label: '示例一 · 花鸟纹样', act: () => loadSample(0) },
+  { label: '示例二 · 螺旋几何纹', act: () => loadSample(1) },
+]));
+
+/* ---------- 通用下拉菜单 ---------- */
+let menuOpen = false;
+let menuAnchor = null;
+function openMenu(anchor, items){
+  closeMenu();
+  menuAnchor = anchor;
+  menu.innerHTML = '';
+  items.forEach(it => {
+    const mi = document.createElement('div');
+    mi.className = 'mi';
+    mi.textContent = it.label;
+    mi.addEventListener('click', () => { closeMenu(); it.act(); });
+    menu.appendChild(mi);
+  });
+  const r = anchor.getBoundingClientRect();
+  menu.style.left = Math.min(r.left, window.innerWidth - 170) + 'px';
+  menu.style.top = (r.bottom + 6) + 'px';
+  menu.classList.add('show');
+  menuOpen = true;
+}
+function closeMenu(){ menu.classList.remove('show'); menuOpen = false; }
+document.addEventListener('click', e => { if (menuOpen && !menu.contains(e.target) && !(menuAnchor && menuAnchor.contains(e.target))) closeMenu(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){ closeMenu(); hideCtxMenu(); } });
+
+/* ============================================================
+ * 语法手册渲染
+ * ============================================================ */
+function renderManual(){
+  const box = $('manual-box');
+  const groups = {};
+  SYNTAX_ITEMS.forEach(it => { (groups[it.category] = groups[it.category] || []).push(it); });
+  const catName = { layer: '图层属性', effect: '蜡染效果', global: '全局配置' };
+  let html = '';
+  Object.entries(groups).forEach(([cat, items]) => {
+    html += '<div class="cat"><h4>' + (catName[cat] || cat) + '</h4>';
+    items.forEach(it => {
+      html += '<div class="item" data-craft="' + esc(it.craftExplain) + '">' +
+        '<div class="top"><span class="name">' + esc(it.name) + '</span><span class="params">' + esc(it.params.join(' · ')) + '</span></div>' +
+        '<pre>' + esc(it.example) + '</pre></div>';
+    });
+    html += '</div>';
+  });
+  box.innerHTML = html;
+  box.querySelectorAll('.item').forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      tip.textContent = el.dataset.craft;
+      const r = el.getBoundingClientRect();
+      tip.style.left = Math.min(r.right + 10, window.innerWidth - 312) + 'px';
+      tip.style.top = Math.max(8, r.top) + 'px';
+      tip.classList.add('show');
+    });
+    el.addEventListener('mouseleave', () => tip.classList.remove('show'));
+  });
+}
+
+/* ---------- Tab 切换 ---------- */
+document.querySelectorAll('.tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    ['manual','code','history'].forEach(t => $('panel-' + t).classList.toggle('hidden', t !== btn.dataset.tab));
+  });
+});
+
+/* ---------- 初始化 ---------- */
+function init(){
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved){ const arr = JSON.parse(saved); if (Array.isArray(arr)) codeHistory = arr.slice(-20); }
+  } catch(e){}
+  renderManual();
+  renderHistory();
+  currentCode = getDefaultCode();
+  editor.value = currentCode;
+  appendMsg('ai', renderAIText(WELCOME, '蜡染是国家级非物质文化遗产，本工坊以「语法即非遗」为理念：每个代码关键字都对应真实蜡染工艺。'));
+  renderCanvas();
+}
+init();
+</script>
+</body>
+</html>
